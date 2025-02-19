@@ -38,7 +38,7 @@ def home():
     return render_template("home.html")
 
 
-@app.route("/create", methods=['GET', 'POST'])
+@app.route("/createNote", methods=['GET', 'POST'])
 def createNote():
     if session["username"] == None:
         return redirect(url_for('login'))
