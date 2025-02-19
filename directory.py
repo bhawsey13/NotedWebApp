@@ -1,5 +1,6 @@
 from flask import Flask, redirect, url_for, request, render_template, session
 from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 from flask_session import Session
 from datetime import datetime
 from flask_moment import Moment
@@ -18,7 +19,9 @@ Session(app)
 
 
 #Configure DB connection
-client = MongoClient('localhost', 27017)
+#client = MongoClient('localhost', 27017)
+uri = "mongodb+srv://bhawsey13:SouthAfrica23@notedwebapp.o18gk.mongodb.net/?retryWrites=true&w=majority&appName=NotedWebApp"
+client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.NotedWebApp
 notes = db.notes
 users = db.users
@@ -72,7 +75,7 @@ def createNote():
             return redirect(url_for('viewNote', noteID=noteID))
         else:
             errorMessage = "Name field cannot be empty.  Please enter a valid name."
-    return render_template("create.html", errorMessage=errorMessage)
+    return render_template("createNote.html", errorMessage=errorMessage)
 
 
 @app.route("/view/<noteID>")
