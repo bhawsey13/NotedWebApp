@@ -1,0 +1,34 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Delete Note </h1>
+
+<form method="POST">
+    <p class="displayMessage">
+        Are you sure you want to delete the following note?
+    </p>
+
+    <table class="noteListTable">
+        <tr>
+            <th> Note Name </th>
+            <th> Creator </th>
+            <th> Area </th>
+            <th> Template </th>
+            <th> Privacy </th>
+        </tr>
+        {% if selectedNote %}
+            <tr>
+                <td> <a href="{{ url_for('viewNote', noteID=selectedNote['_id']) }}"> {{ selectedNote['name'] }} </a> </td>
+                <td> {{ selectedNote['creatorName'] }} </td>
+                <td> {{ selectedNote['area'] }} </td>
+                <td> {{ selectedNote['template'] }} </td>
+                <td> {{ selectedNote['privacy'] }} </td>
+            </tr>
+        {% endif %}
+    </table>
+
+    <button type="submit" class="deleteNoteButton"> Delete </button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+{% block scripts %}
+    {{ super }}
+    {{ moment.include_moment() }}
+{% endblock %}
+
+<h1> {{ selectedNote['name'] }} </h1>
+
+<h4> {{ selectedNote['template'] }} Template </h4>
+<h4> Created by {{ selectedNote['creatorName'] }} on {{ moment( selectedNote['creationDateTime'] ).format('LLL') }} </h4>
+<h4> Last edited on {{ moment( selectedNote['lastSavedEditDateTime'] ).format('LLL') }}</h4>
+
+<script type="text/javascript" src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+<script type="text/javascript">
+    tinymce.init({
+        selector: 'textarea#text-editor-edit',
+        height: 300,
+        custom_undo_redo_levels: 15
+    });
+</script>
+
+<form method="POST">
+    <ul class="viewNoteButtons">
+        <li><button type="submit"> Save </button></li>
+        <li><button type="button"> Summarize </button></li>
+        <li><button type="button"> Download PDF </button></li>
+        <li><button type="button"> Text-to-speech </button></li>
+        <li><a href="{{ url_for('shareNote', noteID=selectedNote['_id']) }}"><button type="button"> Share </button></a></li>
+        <li><a href="{{ url_for('deleteNote', noteID=selectedNote['_id']) }}"><button type="button"> Delete </button></a></li>
+    </ul>
+
+    <div class="noteBody">
+        {% if selectedNote['template'] == "Cornell" %}
+            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
+        {% elif selectedNote['template'] == "Mapping" %}
+            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
+        {% elif selectedNote['template'] == "Outlining" %}
+            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
+        {% elif selectedNote['template'] == "Charting" %}
+            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
+        {% elif selectedNote['template'] == "Sentence" %}
+            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
+        {% endif %}
+    </div>
+</form>
+
+{% endblock %}

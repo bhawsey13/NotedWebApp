@@ -1,0 +1,53 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> New Note </h1>
+
+<form method="POST" class="createNoteForm">
+    <div class ="createRowText">
+        <label for="name"> Name </label>
+        <input type="text" id="name" name="name" placeholder="Enter a name for the note">
+    </div>
+
+    <div class="createRowDropdown">
+        <label for="area"> Area </label>
+        <select name="area" id="area">
+            <option value="Math"> Math </option>
+            <option value="Science"> Science </option>
+            <option value="English"> English </option>
+            <option value="Technology"> Technology </option>
+            <option value="Geography"> Geography </option>
+        </select>
+    </div>
+
+    <div class="createRowDropdown">
+        <label for="template"> Template </label>
+        <select name="template" id="template">
+            <option value="Cornell"> Cornell Method </option>
+            <option value="Mapping"> Mapping Method </option>
+            <option value="Outlining"> Outlining Method </option>
+            <option value="Charting"> Charting Method </option>
+            <option value="Sentence"> Sentence Method </option>
+        </select>
+    </div>
+
+    <div class="createRowRadio">
+        <input type="radio" id="private" name="privacy" value="Private" checked>
+        <label for="private" style="margin-right: 30px"> Private </label>
+        <input type="radio" id="public" name="privacy" value="Public">
+        <label for="public"> Public </label>
+    </div>
+
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <div class="createButtonRow">
+        <button type="submit"> Create Note </button>
+    </div>
+</form>
+
+{% endblock %}

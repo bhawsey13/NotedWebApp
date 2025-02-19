@@ -1,0 +1,33 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Login </h1>
+
+<form method="POST" class="account">
+    <div class="inputRow">
+        <label for="username"> Username </label>
+        <input type="text" id="username" name="username" placeholder="Please enter your username">
+    </div>
+
+    <div class="inputRow">
+        <label for="password"> Password </label>
+        <input type="password" id="password" name="password" placeholder="Please enter your password">
+    </div>
+
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <ul class="buttonRow">
+        <li> <button type="submit" class="submit"> Login </button> </li>
+    </ul>
+
+    <div class="redirectLink">
+        Don't have an account yet?  Create one <a href="{{ url_for('register') }}"> here</a>.
+    </div>
+</form>
+
+{% endblock %}

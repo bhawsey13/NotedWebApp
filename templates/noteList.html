@@ -1,0 +1,46 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Note List </h1>
+
+{% if displayMessage %}
+    <p class="displayMessage"> {{displayMessage}} </p>
+{% endif %}
+
+<table class="noteListTable">
+    <tr>
+        <th> Note Name </th>
+        <th> Creator </th>
+        <th> Area </th>
+        <th> Template </th>
+        <th> Privacy </th>
+    </tr>
+
+    {% if filteredNotes %}
+        {% for note in filteredNotes %}
+        <tr>
+            <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
+            <td> {{ note['creatorName'] }} </td>
+            <td> {{ note['area'] }} </td>
+            <td> {{ note['template'] }} </td>
+            <td> {{ note['privacy'] }} </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+
+    {% if receivedNotes %}
+        {% for note in receivedNotes %}
+        <tr>
+            <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
+            <td> {{ note['creatorName'] }} </td>
+            <td> {{ note['area'] }} </td>
+            <td> {{ note['template'] }} </td>
+            <td> {{ note['privacy'] }} </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+
+{% endblock %}

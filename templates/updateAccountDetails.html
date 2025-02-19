@@ -1,0 +1,31 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Update Account Details </h1>
+
+<form method="POST" class="account">
+    <div class="inputRow">
+        <label for="username"> Username </label>
+        <input type="text" id="username" name="username" placeholder="Please enter your desired new username">
+    </div>
+
+    <div class="inputRow">
+        <label for="password"> Password </label>
+        <input type="password" id="password" name="password" placeholder="Please enter your desired new password">
+    </div>
+
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <ul class="buttonRow">
+        <li> <button type="submit" class="submit"> Confirm Changes </button> </li>
+        <li> <a href="{{ url_for('home') }}"> <button type="button"> Cancel </button> </a> </li>
+        <li> <button type="button" class="delete"> Delete Account </button> </li>
+    </ul>
+</form>
+
+{% endblock %}

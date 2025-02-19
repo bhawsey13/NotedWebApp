@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title> Noted </title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}"> 
+</head>
+
+<body>
+    <div class="navbar">
+        <div class="navbarLogo"> 
+            <a href="{{ url_for('home') }}"> <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="width:50px; height:50px; padding-top:5px; padding-left:30px;"> </a> 
+        </div> 
+        <ul>
+            <li> <a href="{{ url_for('about') }}"> About </a> </li>
+            <li> <a href="{{ url_for('createNote') }}"> Create </a> </li>
+            <li> <a href="{{ url_for('noteList', filterBy='library') }}"> Notes Library </a> </li>
+            {% if session.username %}
+                <li> <a href="{{ url_for('noteList', filterBy='yourNotes') }}"> Your Notes </a> </li>
+            {% endif %}
+            <li> <a href="{{ url_for('search') }}"> Search </a> </li>
+            
+            {% if session.username %}
+                <div class="navDropDown">
+                    <li> <a> {{ session.username }} </a> </li>
+                    <div class="navDropDownContent">
+                        <li> <a href="{{ url_for('logout') }}"> Log Out </a> </li>
+                        <li> <a href="{{ url_for('accountDetails') }}"> Account Details</a> </li>
+                    </div>
+                </div>
+            {% else %}
+                <li style="float:right"> <a href="{{ url_for('register') }}"> Register </a> </li>
+                <li style="float:right"> <a href="{{ url_for('login') }}"> Log In </a> </li>
+            {% endif %}
+        </ul>
+    </div>
+
+    <div class="body">
+    {% block body %}
+
+    {% endblock %}
+    </div>
+
+    <div class="footer">
+        <h4> footer </h4>
+    </div>
+
+</body>
+
+</html>

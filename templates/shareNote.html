@@ -1,0 +1,48 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Share Note </h1>
+
+{% if hasPermissionToShare %}
+    <form method="POST">
+        <p class="displayMessage">
+            Please enter the username of the user you would like to share the following note with.
+        </p>
+
+        <table class="noteListTable">
+            <tr>
+                <th> Note Name </th>
+                <th> Creator </th>
+                <th> Area </th>
+                <th> Template </th>
+                <th> Privacy </th>
+            </tr>
+            {% if selectedNote %}
+                <tr>
+                    <td> <a href="{{ url_for('viewNote', noteID=selectedNote['_id']) }}"> {{ selectedNote['name'] }} </a> </td>
+                    <td> {{ selectedNote['creatorName'] }} </td>
+                    <td> {{ selectedNote['area'] }} </td>
+                    <td> {{ selectedNote['template'] }} </td>
+                    <td> {{ selectedNote['privacy'] }} </td>
+                </tr>
+            {% endif %}
+        </table>
+
+        <input type="text" id="shareWith" class="shareWithTextInput" name="shareWith" placeholder="Please enter the username">
+
+        {% if errorMessage %}
+            <div class="errorMessage">
+                {{ errorMessage }}
+            </div>
+        {% endif %}
+
+        <button type="submit" class="shareNoteButton"> Share </button>
+    </form>
+{% else %}
+    <p class="displayMessage">
+        Sorry, you do not have permission to share this note.  The note must be public or you must be the creator of the note.
+    </p>
+{% endif %}
+
+{% endblock %}
