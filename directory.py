@@ -13,10 +13,16 @@ import bcrypt
 app = Flask(__name__)
 
 
+#secret key
+app.secret_key = environ.get('SECRET_KEY')
+
+
 #Configure session
-app.config["SESSION_PERMANENT"] = False
-app.config["SESSION_TYPE"] = "filesystem"
-Session(app)
+#app.config['SESSION_PERMANENT'] = False
+#app.config['SESSION_TYPE'] = "filesystem"
+#Session(app)
+app.config['SESSION_COOKIE_SECURE'] = True  # Only send cookies over HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protect against XSS
 
 
 #Configure DB connection
@@ -44,7 +50,7 @@ def home():
 
 @app.route("/createNote", methods=['GET', 'POST'])
 def createNote():
-    if session["username"] == None:
+    if session['username'] == None:
         return redirect(url_for('login'))
 
     errorMessage = None
@@ -182,8 +188,8 @@ def login():
         password = request.form['password']
         user = users.find_one({'username': username})
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
-            session["userID"] = user['_id']
-            session["username"] = username
+            session['userID'] = user['_id']
+            session['username'] = username
             return redirect(url_for('home'))
         else:
             errorMessage = "Invalid account details.  Please try again."
@@ -205,8 +211,8 @@ def register():
             errorMessage = "Username and password cannot contain spaces.  Please enter account details without spaces."
         else:   
             userID = ObjectId()
-            session["userID"] = userID
-            session["username"] = username
+            session['userID'] = userID
+            session['username'] = username
             hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users.insert_one({'_id': userID, 'username': username, 'password': hashedPassword, 'admin': False, 'createdNotes': [], 'receivedNotes': []})
             return redirect(url_for('home'))   
@@ -216,8 +222,7 @@ def register():
 
 @app.route("/logout")
 def logout():
-    session["userID"] = None
-    session["username"] = None
+    session.clear()
     return redirect("/")
 
 
