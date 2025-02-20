@@ -20,7 +20,7 @@ Session(app)
 
 #Configure DB connection
 #client = MongoClient('localhost', 27017)
-uri = "mongodb+srv://bhawsey13:SouthAfrica23@notedwebapp.o18gk.mongodb.net/?retryWrites=true&w=majority&appName=NotedWebApp"
+uri = MONGODB_URI
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.NotedWebApp
 notes = db.notes
