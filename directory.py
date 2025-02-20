@@ -57,8 +57,7 @@ def createNote():
     if request.method == 'POST':
         if request.form['name'] != "" :
             noteID = ObjectId()
-            #creatorID = session['userID']      userID no longer in session
-            creatorID = 'x'
+            creatorID = users.find_one({'username': session['username']}, {'_id': 1})['_id']
             creatorName = session['username']
             creationDateTime = str(datetime.utcnow())
             lastSavedEditDateTime = str(datetime.utcnow())
@@ -155,7 +154,8 @@ def noteList(filterBy):
         filteredNotes = notes.find({'privacy': 'Public'})
     elif filterBy == "yourNotes":
         displayMessage = "Currently displaying your notes and notes that have been shared with you."
-        #filteredNotes = notes.find({'creatorID': session['userID']})    userID no longer in session
+        currentUserID = users.find_one({'username': session['username']}, {'_id': 1})['_id']
+        filteredNotes = notes.find({'creatorID': currentUserID})
         receivedNotesID = users.find_one({'username': session['username']}, {'_id': 0, 'receivedNotes': 1})['receivedNotes']
         receivedNotes = notes.find({'_id': {'$in': receivedNotesID}})
     elif filterBy.startswith("search"):
