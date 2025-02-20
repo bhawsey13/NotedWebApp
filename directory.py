@@ -57,8 +57,9 @@ def createNote():
     if request.method == 'POST':
         if request.form['name'] != "" :
             noteID = ObjectId()
-            creatorID = session["userID"]
-            creatorName = session["username"]
+            #creatorID = session['userID']      userID no longer in session
+            creatorID = 'x'
+            creatorName = session['username']
             creationDateTime = str(datetime.utcnow())
             lastSavedEditDateTime = str(datetime.utcnow())
             name = request.form['name']
@@ -154,7 +155,7 @@ def noteList(filterBy):
         filteredNotes = notes.find({'privacy': 'Public'})
     elif filterBy == "yourNotes":
         displayMessage = "Currently displaying your notes and notes that have been shared with you."
-        filteredNotes = notes.find({'creatorID': session['userID']})
+        #filteredNotes = notes.find({'creatorID': session['userID']})    userID no longer in session
         receivedNotesID = users.find_one({'username': session['username']}, {'_id': 0, 'receivedNotes': 1})['receivedNotes']
         receivedNotes = notes.find({'_id': {'$in': receivedNotesID}})
     elif filterBy.startswith("search"):
@@ -188,7 +189,7 @@ def login():
         password = request.form['password']
         user = users.find_one({'username': username})
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
-            session['userID'] = user['_id']
+            #session['userID'] = user['_id']
             session['username'] = username
             return redirect(url_for('home'))
         else:
@@ -211,7 +212,7 @@ def register():
             errorMessage = "Username and password cannot contain spaces.  Please enter account details without spaces."
         else:   
             userID = ObjectId()
-            session['userID'] = userID
+            #session['userID'] = userID
             session['username'] = username
             hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users.insert_one({'_id': userID, 'username': username, 'password': hashedPassword, 'admin': False, 'createdNotes': [], 'receivedNotes': []})
