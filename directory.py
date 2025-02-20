@@ -112,7 +112,7 @@ def deleteNote(noteID):
     
     if request.method == 'POST':
         notes.delete_one({'_id': ObjectId(noteID)})
-        #remember to delete note from user's received notes and created notes
+        #delete note from user's received notes and created notes
         users.update_one({'_id': session['userID']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
         users.update_one({'receivedNotes': ObjectId(noteID)}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
         return redirect(url_for('home'))
