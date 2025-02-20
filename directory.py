@@ -5,6 +5,7 @@ from flask_session import Session
 from datetime import datetime
 from flask_moment import Moment
 from bson.objectid import ObjectId
+from os import environ
 import bcrypt
 
 
@@ -20,7 +21,7 @@ Session(app)
 
 #Configure DB connection
 #client = MongoClient('localhost', 27017)
-uri = MONGODB_URI
+uri = environ.get('MONGODB_URI')
 client = MongoClient(uri, server_api=ServerApi('1'))
 db = client.NotedWebApp
 notes = db.notes
