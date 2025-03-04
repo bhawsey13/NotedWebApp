@@ -50,7 +50,7 @@ def home():
 
 @app.route("/createNote", methods=['GET', 'POST'])
 def createNote():
-    if session['username'] == None:
+    if session.get('username', None) == None:
         return redirect(url_for('login'))
 
     errorMessage = None
