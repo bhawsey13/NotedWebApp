@@ -73,9 +73,11 @@ def createNote():
             elif template == 'Outlining':
                 content = " "
             elif template == 'Charting':
-                content = " "
+                content = """<p><strong>Main Topic</strong></p><table style="width: 100%;"><tbody><tr><th style="width: 33.3333%;">Topic 1</th><th style="width: 33.3333%;">Topic 2</th><th style="width: 33.3333%;">Topic 3</th></tr>
+                        <tr><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li>
+                        <li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td></tr>"""
             elif template == 'Sentence':
-                content = "<strong> Main Topic </strong> <ol> <li> Detail Sentence </li> <li> Detail Sentence </li> <li> Detail Sentence </li> </ol>"
+                content = """<strong> Main Topic </strong> <ol> <li> Detail Sentence </li> <li> Detail Sentence </li> <li> Detail Sentence </li> </ol>"""
 
             notes.insert_one({'_id':  noteID, 'name': name, 'creatorName': creatorName, 'creatorID': creatorID, 'creationDateTime': creationDateTime, 'lastSavedEditDateTime': lastSavedEditDateTime, 'area': area, 'template': template, 'privacy': privacy, 'content': content})
             users.update_one({'_id': creatorID}, {'$push': {'createdNotes': noteID}})
