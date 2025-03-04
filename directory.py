@@ -71,11 +71,12 @@ def createNote():
             elif template == 'Mapping':
                 content = " "
             elif template == 'Outlining':
-                content = " "
+                content = """<p><strong>Main Topic</strong></p><ul><li>Subtopic 1<ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul></li></ul><ul><li>Subtopic 2<ul><li>Key point 1</li>
+                            <li>Key point 2</li><li>Key point 3</li></ul></li></ul><ul><li>Subtopic 3<ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul></li></ul>"""
             elif template == 'Charting':
                 content = """<p><strong>Main Topic</strong></p><table style="width: 100%;"><tbody><tr><th style="width: 33.3333%;">Topic 1</th><th style="width: 33.3333%;">Topic 2</th><th style="width: 33.3333%;">Topic 3</th></tr>
-                        <tr><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li>
-                        <li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td></tr>"""
+                            <tr><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li>
+                            <li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td></tr>"""
             elif template == 'Sentence':
                 content = """<strong> Main Topic </strong> <ol> <li> Detail Sentence </li> <li> Detail Sentence </li> <li> Detail Sentence </li> </ol>"""
 
