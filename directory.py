@@ -90,9 +90,8 @@ def viewNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
-    elif session != None:
-        if selectedNote['creatorName'] == session['username']:
-            return redirect(url_for('editNote', noteID=noteID))
+    elif selectedNote['creatorName'] == session['username']:
+        return redirect(url_for('editNote', noteID=noteID))
 
     return render_template("viewNote.html", selectedNote=selectedNote)
 
@@ -224,7 +223,8 @@ def register():
 
 @app.route("/logout")
 def logout():
-    session.clear()
+    #session.clear()
+    session['username'] = ''
     return redirect("/")
 
 
