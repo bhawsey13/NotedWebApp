@@ -67,7 +67,10 @@ def createNote():
             privacy = request.form['privacy']
 
             if template == 'Cornell':
-                content = " "
+                content = """<table style="width: 100%;"><tbody><tr><td style="width: 35%; text-align: center;"><p><strong>Cues</strong></p><p style="text-align: left;">After class: Main ideas, prompts, and questions</p>
+                            </td><td style="width: 65%; text-align: center;"><p><strong>Notes</strong></p><p style="text-align: left;">During class: Main points and details</p></td></tr><tr>
+                            <td style="text-align: center;" colspan="2"><p><strong>Summary</strong></p><p style="text-align: left;">After class: Summary of the lesson and highlighting key points</p>
+                            </td></tr></tbody></table>"""
             elif template == 'Mapping':
                 content = " "
             elif template == 'Outlining':
