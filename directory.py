@@ -90,8 +90,9 @@ def viewNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
-    elif session != None  &  selectedNote['creatorName'] == session['username']:
-        return redirect(url_for('editNote', noteID=noteID))
+    elif session != None:
+        if selectedNote['creatorName'] == session['username']:
+            return redirect(url_for('editNote', noteID=noteID))
 
     return render_template("viewNote.html", selectedNote=selectedNote)
 
