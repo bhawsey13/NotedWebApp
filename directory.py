@@ -81,7 +81,7 @@ def createNote():
                             <tr><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li>
                             <li>Point 3 Details</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1 Details</li><li>Point 2 Details</li><li>Point 3 Details</li></ol></td></tr>"""
             elif template == 'Sentence':
-                content = """<strong> Main Topic </strong> <ol> <li> Detail Sentence </li> <li> Detail Sentence </li> <li> Detail Sentence </li> </ol>"""
+                content = """<p><strong> Main Topic </strong></p><ol><li>Sentence covering key details of the topic</li><li>Sentence covering key details of the topic</li><li>Sentence covering key details of the topic</li></ol>"""
 
             notes.insert_one({'_id':  noteID, 'name': name, 'creatorName': creatorName, 'creatorID': creatorID, 'creationDateTime': creationDateTime, 'lastSavedEditDateTime': lastSavedEditDateTime, 'area': area, 'template': template, 'privacy': privacy, 'content': content})
             users.update_one({'_id': creatorID}, {'$push': {'createdNotes': noteID}})
