@@ -195,7 +195,6 @@ def login():
         password = request.form['password']
         user = users.find_one({'username': username})
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
-            #session['userID'] = user['_id']
             session['username'] = username
             return redirect(url_for('home'))
         else:
@@ -218,7 +217,6 @@ def register():
             errorMessage = "Username and password cannot contain spaces.  Please enter account details without spaces."
         else:   
             userID = ObjectId()
-            #session['userID'] = userID
             session['username'] = username
             hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users.insert_one({'_id': userID, 'username': username, 'password': hashedPassword, 'admin': False, 'createdNotes': [], 'receivedNotes': []})
@@ -234,13 +232,30 @@ def logout():
     return redirect("/")
 
 
-@app.route("/accountDetails")
+@app.route("/accountDetails", methods=['GET', 'POST'])
 def accountDetails():
-    if session['username'] == None:
+    if session.get('username', None) == None:
         return redirect(url_for('home'))
 
-    errorMessage = None
     account = users.find_one({'username': session['username']})
+    errorMessage = None
+    if request.method == 'POST':
+        newUsername = request.form['newUsername']
+        newPassword = request.form['newPassword']
+        if newUsername != None  and  " " not in newUsername:
+            #check new username availability
+            #update all notes created by user with the user's new username
+            #update the user object with new username
+            errorMessage = "None."
+        else:
+            errorMessage = "Invalid username.  Please try again."
+        if newPassword != None  and  " " not in newPassword:
+            #check password validity
+            #update the user object with new password
+            errorMessage = "None."
+        else:
+            errorMessage = errorMessage + "Invalid username.  Please try again."
+
     return render_template("updateAccountDetails.html", errorMessage=errorMessage, account=account)
 
 
