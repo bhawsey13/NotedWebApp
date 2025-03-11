@@ -237,26 +237,40 @@ def accountDetails():
     if session.get('username', None) == None:
         return redirect(url_for('home'))
 
-    account = users.find_one({'username': session['username']})
     errorMessage = None
     if request.method == 'POST':
-        newUsername = request.form['newUsername']
-        newPassword = request.form['newPassword']
-        if newUsername != None  and  " " not in newUsername:
-            #check new username availability
-            #update all notes created by user with the user's new username
-            #update the user object with new username
-            errorMessage = "None."
-        else:
-            errorMessage = "Invalid username.  Please try again."
-        if newPassword != None  and  " " not in newPassword:
-            #check password validity
-            #update the user object with new password
-            errorMessage = "None."
-        else:
-            errorMessage = errorMessage + "Invalid username.  Please try again."
+        newUsername = request.form['username']
+        newPassword = request.form['password']
+        if newUsername == ""  and  newPassword == "":
+            errorMessage = "Both fields cannot be empty."
+        elif newUsername != ""  and  newPassword != "":
+            errorMessage = "Please only fill in one field at a time."
+        elif newUsername != "":
+            checkUsernameAvailabilty = users.find_one({'username': newUsername})
+            if " " in newUsername:
+                errorMessage = "Invalid username.  Please try again."
+            elif checkUsernameAvailabilty != None:
+                errorMessage = "Username already in use.  Please choose a different one."
+            else:
+                #update all notes created by user with the user's new username
+                notes.update_many({'creatorName': session['username']}, {'$set': {'creatorName': newUsername}})
+                #update the user object with new username
+                users.update_one({'username': session['username']}, {'$set': {'username': newUsername}})
+                #update session username variable 
+                session['username'] = newUsername
+                errorMessage = "Username successfuly updated"
+        elif newPassword != "":
+            if " " in newPassword:
+                errorMessage = "Invalid password.  Please try again."
+            elif len(newPassword) < 10:
+                errorMessage = "Password not secure enough.  Please choose a longer password."
+            else:
+                hashedPassword = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt())
+                users.update_one({'username': session['username']}, {'$set': {'password': hashedPassword}})
+                errorMessage = "Password successfuly updated."
 
-    return render_template("updateAccountDetails.html", errorMessage=errorMessage, account=account)
+
+    return render_template("updateAccountDetails.html", errorMessage=errorMessage)
 
 
 
