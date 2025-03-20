@@ -269,7 +269,7 @@ def accountDetails():
                 users.update_one({'username': session['username']}, {'$set': {'password': hashedPassword}})
                 errorMessage = "Password successfuly updated."
 
-    return render_template("updateAccountDetails.html", errorMessage=errorMessage)
+    return render_template("updateAccountDetails.html", errorMessage=errorMessage, username=session['username'])
 
 
 @app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
