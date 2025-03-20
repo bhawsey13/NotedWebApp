@@ -6,12 +6,25 @@
 
 <form method="POST">
     <p class="displayMessage">
-        Are you sure you want to delete your account?
+        Below is a list of all of the notes that have been created on this account.  Upon deletion of this account what would you like to happen to these notes?
     </p>
+
+    {% if filteredNotes %}
+        {% for note in filteredNotes %}
+        <tr>
+            <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
+            <td> {{ note['creatorName'] }} </td>
+            <td> {{ note['area'] }} </td>
+            <td> {{ note['template'] }} </td>
+            <td> {{ note['privacy'] }} </td>
+        </tr>
+        {% endfor %}
+    {% endif %}
 
     <div class="createRowRadio">
         <input type="radio" id="keepNotes" name="whatToDoWithNotes" value="keepNotes" checked>
         <label for="keepNotes" style="margin-right: 30px"> Keep all notes you have created on the application </label>
+        <br>
         <input type="radio" id="deleteNotes" name="whatToDoWithNotes" value="deleteNotes">
         <label for="deleteNotes"> Delete all notes you have created on the application </label>
     </div>
@@ -20,8 +33,6 @@
         <li> <a href="{{ url_for('accountDetails') }}"> <button type="button"> Cancel </button> </a> </li>
         <li> <button type="submit" class="delete"> Delete </button> </li>
     </ul>
-
-    {{ whatToDoWithNotes }}
 </form>
 
 {% endblock %}

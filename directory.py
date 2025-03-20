@@ -274,15 +274,16 @@ def accountDetails():
 
 @app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
 def deleteAccount(username):
-    whatToDoWithNotes = None
     if session.get('username', None) == None:
         return redirect(url_for('home'))
+
+    filteredNotes = None
+    filteredNotes = notes.find({'creatorName': session['username']})
     
     if request.method == 'POST':
         whatToDoWithNotes = request.form['whatToDoWithNotes']
 
-
-    return render_template("deleteAccount.html", whatToDoWithNotes=whatToDoWithNotes)
+    return render_template("deleteAccount.html", filteredNotes=filteredNotes)
 
 
 
