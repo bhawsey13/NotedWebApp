@@ -196,6 +196,8 @@ def login():
         user = users.find_one({'username': username})
         if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             session['username'] = username
+            if user['admin']:
+                session['admin'] = True
             return redirect(url_for('home'))
         else:
             errorMessage = "Invalid account details.  Please try again."
@@ -229,6 +231,7 @@ def register():
 def logout():
     #session.clear()
     session.pop('username')
+    session.pop('admin')
     return redirect("/")
 
 

@@ -26,6 +26,9 @@
                     <div class="navDropDownContent">
                         <li> <a href="{{ url_for('logout') }}"> Log Out </a> </li>
                         <li> <a href="{{ url_for('accountDetails') }}"> Account Details</a> </li>
+                        {% if session.admin %}
+                            <li> <a href="{{ url_for('accountDetails') }}"> Admin Controls </a> </li>
+                        {% endif %}
                     </div>
                 </div>
             {% else %}
