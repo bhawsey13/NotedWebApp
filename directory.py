@@ -269,8 +269,20 @@ def accountDetails():
                 users.update_one({'username': session['username']}, {'$set': {'password': hashedPassword}})
                 errorMessage = "Password successfuly updated."
 
-
     return render_template("updateAccountDetails.html", errorMessage=errorMessage)
+
+
+@app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
+def deleteAccount(username):
+    whatToDoWithNotes = None
+    if session.get('username', None) == None:
+        return redirect(url_for('home'))
+    
+    if request.method == 'POST':
+        whatToDoWithNotes = request.form['whatToDoWithNotes']
+
+
+    return render_template("deleteAccount.html", whatToDoWithNotes=whatToDoWithNotes)
 
 
 

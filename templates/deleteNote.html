@@ -28,7 +28,11 @@
         {% endif %}
     </table>
 
-    <button type="submit" class="deleteNoteButton"> Delete </button>
+    <ul class="buttonRow"> 
+        <li> <a href="{{ url_for('accountDetails') }}"> <button type="button"> Cancel </button> </a> </li>
+        <li> <button type="submit" class="deleteNoteButton"> Delete </button> </li>
+    </ul>
+
 </form>
 
 {% endblock %}

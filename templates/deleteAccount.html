@@ -1,0 +1,27 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Delete Account </h1>
+
+<form method="POST">
+    <p class="displayMessage">
+        Are you sure you want to delete your account?
+    </p>
+
+    <div class="createRowRadio">
+        <input type="radio" id="keepNotes" name="whatToDoWithNotes" value="keepNotes" checked>
+        <label for="keepNotes" style="margin-right: 30px"> Keep all notes you have created on the application </label>
+        <input type="radio" id="deleteNotes" name="whatToDoWithNotes" value="deleteNotes">
+        <label for="deleteNotes"> Delete all notes you have created on the application </label>
+    </div>
+
+    <ul class="buttonRow"> 
+        <li> <a href="{{ url_for('accountDetails') }}"> <button type="button"> Cancel </button> </a> </li>
+        <li> <button type="submit" class="deleteNoteButton"> Delete </button> </li>
+    </ul>
+
+    {{ whatToDoWithNotes }}
+</form>
+
+{% endblock %}
