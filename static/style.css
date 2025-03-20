@@ -126,7 +126,7 @@ body {
     padding-top: 10px;
 }
 
-.account .buttonRow {
+.buttonRow {
     width: 100%;
     list-style-type: none;
     overflow: hidden;
@@ -135,13 +135,13 @@ body {
     text-align: center;
 }
 
-.account .buttonRow li {
+.buttonRow li {
     margin: 0;
     padding: 0;
     display: inline-block;
 }
 
-.account .buttonRow button {
+.buttonRow button {
     padding: 10px 15px;
     border-radius: 10px;
     border-width: 1px;
