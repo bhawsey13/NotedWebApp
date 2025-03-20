@@ -231,7 +231,8 @@ def register():
 def logout():
     #session.clear()
     session.pop('username')
-    session.pop('admin')
+    if session.get('admin', None) != None:
+        session.pop('admin')
     return redirect("/")
 
 
