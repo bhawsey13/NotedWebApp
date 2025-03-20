@@ -147,15 +147,15 @@ body {
     border-width: 1px;
 }
 
-.account .submit:hover {
+.buttonRow .submit:hover {
     background-color: rgb(75, 114, 99);
 }
 
-.account .delete:hover {
+.buttonRow .delete:hover {
     background-color: rgb(177, 89, 89);
 }
 
-.account button:hover {
+.buttonRow button:hover {
     background-color: rgb(131, 131, 131);
 }
 
