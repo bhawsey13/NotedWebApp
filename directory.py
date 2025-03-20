@@ -290,6 +290,14 @@ def deleteAccount(username):
     return render_template("deleteAccount.html", filteredNotes=filteredNotes)
 
 
+@app.route("/adminControls", methods=['GET', 'POST'])
+def adminControls():
+    if session.get('username', None) == None  or  session.get('admin', False) != True:
+        return redirect(url_for('home'))
+
+    return render_template("adminControls.html")
+
+
 
 
 
