@@ -390,26 +390,6 @@ h4 {
 
 
 
-/* delete note page styling */
-
-.deleteNoteButton {
-    margin-top: 20px;
-    padding: 10px 15px;
-    border-radius: 10px;
-    border-width: 1px;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.deleteNoteButton:hover {
-    background-color: rgb(177, 89, 89);
-}
-
-
-
-
-
 /* share note page styling */
 
 .shareNoteButton {
