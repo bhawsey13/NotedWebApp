@@ -286,12 +286,12 @@ def deleteAccount(username):
     
     if request.method == 'POST':
         whatToDoWithNotes = request.form['whatToDoWithNotes']
-        if whatToDoWithNotes = "deleteNotes":
+        if whatToDoWithNotes == "deleteNotes":
             #for each note, remove noteID from receivedNotes of all users that it was sent to
             #for each note, delete the note itself
             notesToDelete = notes.find_many({'creatorName': session['username']})
             #users.update_many({'receivedNotes': {'$in': [currentNote]}}, {'$pull': })
-        elif whatToDoWithNotes = "keepNotes":
+        elif whatToDoWithNotes == "keepNotes":
             #for each note, update creatorName to include 'deleted account'
             notes.update_many({'creatorName': session['username']}, {'$push': {'username': '(DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
