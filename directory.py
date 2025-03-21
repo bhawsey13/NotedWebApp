@@ -290,11 +290,11 @@ def deleteAccount(username):
         if whatToDoWithNotes == "deleteNotes":
             #for each note, remove noteID from receivedNotes of all users that it was sent to
             #for each note, delete the note itself
-            notesToDelete = users.find({'username': session['username']}, {'_id': 0, 'createdNotes': 1})['createdNotes']
+            notesToDelete = users.find({'username': session['username']}, {'_id': 0, 'createdNotes': 1})
             #users.update_many({'receivedNotes': {'$in': [currentNote]}}, {'$pull': })
         elif whatToDoWithNotes == "keepNotes":
             #for each note, update creatorName to include 'deleted account'
-            notes.update_many({'creatorName': session['username']}, {'$push': {'username': '(DELETED ACCOUNT)'}})
+            notes.update_many({'creatorName': session['username']}, {'$push': {'creatorName': '(DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
         #users.delete_one('username': session['username'])
         return redirect(url_for('logout'))
