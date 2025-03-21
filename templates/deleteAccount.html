@@ -44,6 +44,8 @@
     </ul>
 </form>
 
-{{ notesToDelete }}
+{% for note in notesToDelete %}
+    {{ note }}
+{% endfor %}
 
 {% endblock %}
