@@ -18,7 +18,7 @@
     {% if allNotes %}
         {% for note in allNotes %}
             <tr>
-                <td> <a href="{{ url_for('viewNote', noteID=selectedNote['_id']) }}"> {{ selectedNote['name'] }} </a> </td>
+                <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
                 <td> {{ note['creatorName'] }} </td>
                 <td> {{ note['area'] }} </td>
                 <td> {{ note['template'] }} </td>
