@@ -294,10 +294,10 @@ def deleteAccount(username):
             #users.update_many({'receivedNotes': {'$in': [currentNote]}}, {'$pull': })
         elif whatToDoWithNotes == "keepNotes":
             #for each note, update creatorName to include 'deleted account'
-            notes.update_many({'creatorName': session['username']}, {'$push': {'creatorName': '(DELETED ACCOUNT)'}})
+            notes.update_many({'creatorName': session['username']}, {'$set': {'creatorName': session['username'] + ' (DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
         #users.delete_one('username': session['username'])
-        return redirect(url_for('logout'))
+        #return redirect(url_for('logout'))
 
     return render_template("deleteAccount.html", filteredNotes=filteredNotes, notesToDelete=notesToDelete)
 
