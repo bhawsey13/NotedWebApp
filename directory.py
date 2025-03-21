@@ -126,8 +126,8 @@ def deleteNote(noteID):
     if request.method == 'POST':
         notes.delete_one({'_id': ObjectId(noteID)})
         #delete note from user's received notes and created notes
-        users.update_one({'_id': session['userID']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
-        users.update_one({'receivedNotes': ObjectId(noteID)}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
+        users.update_one({'username': session['username']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
+        users.update_many({'receivedNotes': {'$in': [ObjectId(noteID)]}}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
         return redirect(url_for('home'))
 
     return render_template("deleteNote.html", selectedNote=selectedNote)
@@ -286,6 +286,17 @@ def deleteAccount(username):
     
     if request.method == 'POST':
         whatToDoWithNotes = request.form['whatToDoWithNotes']
+        if whatToDoWithNotes = "deleteNotes":
+            #for each note, remove noteID from receivedNotes of all users that it was sent to
+            #for each note, delete the note itself
+            notesToDelete = notes.find_many({'creatorName': session['username']})
+            #users.update_many({'receivedNotes': {'$in': [currentNote]}}, {'$pull': })
+        elif whatToDoWithNotes = "keepNotes":
+            #for each note, update creatorName to include 'deleted account'
+            notes.update_many({'creatorName': session['username']}, {'$push': {'username': '(DELETED ACCOUNT)'}})
+        #lastly, delete the account itself and logout
+        #users.delete_one('username': session['username'])
+        return redirect(url_for('logout'))
 
     return render_template("deleteAccount.html", filteredNotes=filteredNotes)
 
