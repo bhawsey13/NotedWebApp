@@ -298,7 +298,7 @@ def deleteAccount(username):
             #for each note, update creatorName to include 'deleted account'
             notes.update_many({'creatorName': session['username']}, {'$set': {'creatorName': session['username'] + ' (DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
-        #users.delete_one({'username': session['username']})
+        users.delete_one({'username': session['username']})
         return redirect(url_for('logout'))
 
     return render_template("deleteAccount.html", filteredNotes=filteredNotes, notesToDelete=notesToDelete)
