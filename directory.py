@@ -290,7 +290,7 @@ def deleteAccount(username):
         if whatToDoWithNotes == "deleteNotes":
             #for each note, remove noteID from receivedNotes of all users that it was sent to
             #for each note, delete the note itself
-            notesToDelete = users.find({'username': session['username']}, {'_id': 0, 'createdNotes': 1})['createdNotes']
+            notesToDelete = users.find({'username': session['username']}, {'_id': 0, 'createdNotes': 1})
             for note in notesToDelete:
                 users.update_many({'receivedNotes': {'$in': [ObjectId(note)]}}, {'$pull': [ObjectId(note)]})
                 notes.delete_one({'_id': ObjectId(note)})
