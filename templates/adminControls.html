@@ -3,7 +3,54 @@
 {% block body %}
 
 <h1> Admin Controls </h1>
+<p class="displayMessage">
+    Here is a list of all notes in the system.
+</p>
 
+<table class="noteListTable">
+    <tr>
+        <th> Note Name </th>
+        <th> Creator </th>
+        <th> Area </th>
+        <th> Template </th>
+        <th> Privacy </th>
+    </tr>
+    {% if allNotes %}
+        {% for note in allNotes %}
+            <tr>
+                <td> <a href="{{ url_for('viewNote', noteID=selectedNote['_id']) }}"> {{ selectedNote['name'] }} </a> </td>
+                <td> {{ note['creatorName'] }} </td>
+                <td> {{ note['area'] }} </td>
+                <td> {{ note['template'] }} </td>
+                <td> {{ note['privacy'] }} </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>
+
+
+<p class="displayMessage">
+    Here is a list of all users in the system.
+</p>
+
+<table class="noteListTable">
+    <tr>
+        <th> Usermame </th>
+        <th> Admin Status </th>
+        <th> Created Notes </th>
+        <th> Received Notes </th>
+    </tr>
+    {% if allUsers %}
+        {% for user in allUsers %}
+            <tr>
+                <td> {{ user['username'] }} </td>
+                <td> {{ user['admin'] }} </td>
+                <td> {{ user['createdNotes'] }} </td>
+                <td> {{ user['receivedNotes'] }} </td>
+            </tr>
+        {% endfor %}
+    {% endif %}
+</table>
 
 
 {% endblock %}

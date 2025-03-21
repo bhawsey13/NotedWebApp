@@ -283,7 +283,6 @@ def deleteAccount(username):
 
     filteredNotes = None
     filteredNotes = notes.find({'creatorName': session['username']})
-    notesToDelete = None
     
     if request.method == 'POST':
         whatToDoWithNotes = request.form['whatToDoWithNotes']
@@ -301,7 +300,7 @@ def deleteAccount(username):
         users.delete_one({'username': session['username']})
         return redirect(url_for('logout'))
 
-    return render_template("deleteAccount.html", filteredNotes=filteredNotes, notesToDelete=notesToDelete)
+    return render_template("deleteAccount.html", filteredNotes=filteredNotes)
 
 
 @app.route("/adminControls", methods=['GET', 'POST'])
@@ -309,7 +308,10 @@ def adminControls():
     if session.get('username', None) == None  or  session.get('admin', False) != True:
         return redirect(url_for('home'))
 
-    return render_template("adminControls.html")
+    allNotes = notes.find()
+    allUsers = users.find()
+
+    return render_template("adminControls.html", allNotes=allNotes, allUsers=allUsers)
 
 
 
