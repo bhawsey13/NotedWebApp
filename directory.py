@@ -105,8 +105,10 @@ def viewNote(noteID):
 @app.route("/edit/<noteID>", methods=['GET', 'POST'])
 def editNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False ):
+    if selectedNote == None:
         return redirect(url_for('home'))
+    elif session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False:
+        return redirect(url_for('viewNote', noteID=noteID))
 
     if request.method == 'POST':
         content = request.form['tinymce']
