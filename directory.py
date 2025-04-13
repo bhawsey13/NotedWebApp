@@ -96,7 +96,7 @@ def viewNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
-    elif selectedNote['creatorName'] == session.get('username', None):
+    elif selectedNote['creatorName'] == session.get('username', None)  or  session.get('admin', None) == True:
         return redirect(url_for('editNote', noteID=noteID))
 
     return render_template("viewNote.html", selectedNote=selectedNote)
@@ -105,7 +105,7 @@ def viewNote(noteID):
 @app.route("/edit/<noteID>", methods=['GET', 'POST'])
 def editNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    if selectedNote == None or session['username'] != selectedNote['creatorName']:
+    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False ):
         return redirect(url_for('home'))
 
     if request.method == 'POST':
@@ -120,13 +120,13 @@ def editNote(noteID):
 @app.route("/delete/<noteID>", methods=['GET', 'POST'])
 def deleteNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    if selectedNote == None or session['username'] != selectedNote['creatorName']:
+    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False ):
         return redirect(url_for('home'))
     
     if request.method == 'POST':
         notes.delete_one({'_id': ObjectId(noteID)})
         #delete note from user's received notes and created notes
-        users.update_one({'username': session['username']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
+        users.update_one({'username': selectedNote['creatorName']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
         users.update_many({'receivedNotes': {'$in': [ObjectId(noteID)]}}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
         return redirect(url_for('home'))
 
@@ -278,26 +278,26 @@ def accountDetails():
 
 @app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
 def deleteAccount(username):
-    if session.get('username', None) == None:
+    if session.get('username', None) != username  and  session.get('admin', None) == False:
         return redirect(url_for('home'))
 
     filteredNotes = None
-    filteredNotes = notes.find({'creatorName': session['username']})
+    filteredNotes = notes.find({'creatorName': username})
     
     if request.method == 'POST':
         whatToDoWithNotes = request.form['whatToDoWithNotes']
         if whatToDoWithNotes == "deleteNotes":
             #for each note, remove noteID from receivedNotes of all users that it was sent to
             #for each note, delete the note itself
-            notesToDelete = users.find_one({'username': session['username']}, {'_id': 0, 'createdNotes': 1})['createdNotes']
+            notesToDelete = users.find_one({'username': username}, {'_id': 0, 'createdNotes': 1})['createdNotes']
             for note in notesToDelete:
                 users.update_many({'receivedNotes': {'$in': [ObjectId(note)]}}, {'$pull': {'receivedNotes': ObjectId(note)}})
                 notes.delete_one({'_id': ObjectId(note)})
         elif whatToDoWithNotes == "keepNotes":
             #for each note, update creatorName to include 'deleted account'
-            notes.update_many({'creatorName': session['username']}, {'$set': {'creatorName': session['username'] + ' (DELETED ACCOUNT)'}})
+            notes.update_many({'creatorName': username}, {'$set': {'creatorName': username + ' (DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
-        users.delete_one({'username': session['username']})
+        users.delete_one({'username': username})
         return redirect(url_for('logout'))
 
     return render_template("deleteAccount.html", filteredNotes=filteredNotes)

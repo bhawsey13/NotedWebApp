@@ -9,6 +9,7 @@
 
 <table class="noteListTable">
     <tr>
+        <th> Note ID </th>
         <th> Note Name </th>
         <th> Creator </th>
         <th> Area </th>
@@ -18,6 +19,7 @@
     {% if allNotes %}
         {% for note in allNotes %}
             <tr>
+                <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['_id'] }} </a> </td>
                 <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
                 <td> {{ note['creatorName'] }} </td>
                 <td> {{ note['area'] }} </td>
