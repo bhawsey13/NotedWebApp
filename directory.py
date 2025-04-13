@@ -122,7 +122,7 @@ def editNote(noteID):
 @app.route("/delete/<noteID>", methods=['GET', 'POST'])
 def deleteNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False ):
+    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) != True ):
         return redirect(url_for('home'))
     
     if request.method == 'POST':
