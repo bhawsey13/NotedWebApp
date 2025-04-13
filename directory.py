@@ -107,7 +107,7 @@ def editNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
-    elif session['username'] != selectedNote['creatorName']  and  session.get('admin', None) == False:
+    elif session['username'] != selectedNote['creatorName']  and  session.get('admin', None) != True:
         return redirect(url_for('viewNote', noteID=noteID))
 
     if request.method == 'POST':
