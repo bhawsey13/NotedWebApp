@@ -4,12 +4,12 @@
 
 <h1> Update Account Details - Admin Control </h1>
 
-<p class="displayMessage" style="text-align: center;"> This is for the account with username:  {{ username }} </p>
+<p class="displayMessage" style="text-align: center;"> This is for the account with username:  <strong> {{ username }} </strong> </p>
 
 <form method="POST" class="account">
     <div class="inputRow">
         <label for="username"> Username </label>
-        <input type="text" id="username" name="username" placeholder="Please enter your desired new username">
+        <input type="text" id="username" name="username" placeholder="Please enter the desired new username">
     </div>
 
     {% if errorMessage %}

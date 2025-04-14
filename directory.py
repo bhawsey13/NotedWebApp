@@ -130,7 +130,7 @@ def deleteNote(noteID):
         #delete note from user's received notes and created notes
         users.update_one({'username': selectedNote['creatorName']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
         users.update_many({'receivedNotes': {'$in': [ObjectId(noteID)]}}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
-        return redirect(url_for('home'))
+        return redirect(url_for('noteList', filterBy='yourNotes'))
 
     return render_template("deleteNote.html", selectedNote=selectedNote)
 
@@ -147,7 +147,7 @@ def shareNote(noteID):
             errorMessage = "Invalid username.  Please try again."
         else:
             users.update_one({'username': shareWith}, {'$push': {'receivedNotes': ObjectId(noteID)}})
-            return redirect(url_for('home'))
+            return redirect(url_for('viewNote', noteID=noteID))
 
     return render_template("shareNote.html", selectedNote=selectedNote, errorMessage=errorMessage, hasPermissionToShare=hasPermissionToShare)
 
@@ -300,7 +300,10 @@ def deleteAccount(username):
             notes.update_many({'creatorName': username}, {'$set': {'creatorName': username + ' (DELETED ACCOUNT)'}})
         #lastly, delete the account itself and logout
         users.delete_one({'username': username})
-        return redirect(url_for('logout'))
+        if session.get('admin', None) == True:
+            return redirect(url_for('adminControls'))
+        else:
+            return redirect(url_for('logout'))
 
     return render_template("deleteAccount.html", filteredNotes=filteredNotes)
 
