@@ -50,12 +50,12 @@
                 <td> {{ user['admin'] }} </td>
                 <td> 
                     {% for note in user['createdNotes'] %}
-                        <p> note <br> </p>
+                        <p> {{ note }} <br> </p>
                     {% endfor %}
                 </td>
                 <td> 
                     {% for note in user['receivedNotes'] %}
-                        <p> note <br> </p>
+                        <p> {{ note }} <br> </p>
                     {% endfor %}
                 </td>
             </tr>
