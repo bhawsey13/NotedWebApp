@@ -48,12 +48,21 @@
             <tr>
                 <td> {{ user['username'] }} </td>
                 <td> {{ user['admin'] }} </td>
-                <td> {{ user['createdNotes'] }} </td>
-                <td> {{ user['receivedNotes'] }} </td>
+                <td> 
+                    {% for note in user['createdNotes'] %}
+                        <p> note <br> </p>
+                    {% endfor %}
+                </td>
+                <td> 
+                    {% for note in user['receivedNotes'] %}
+                        <p> note <br> </p>
+                    {% endfor %}
+                </td>
             </tr>
         {% endfor %}
     {% endif %}
 </table>
 
+<br><br>
 
 {% endblock %}
