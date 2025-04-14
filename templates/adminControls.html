@@ -46,7 +46,7 @@
     {% if allUsers %}
         {% for user in allUsers %}
             <tr>
-                <a href="{{ url_for('accountDetailsAdminControl', username=user['username']) }}"> <td> {{ user['username'] }} </td> </a>
+                <td> <a href="{{ url_for('accountDetailsAdminControl', username=user['username']) }}"> {{ user['username'] }} </a> </td>
                 <td> {{ user['admin'] }} </td>
                 <td> 
                     {% for note in user['createdNotes'] %}
