@@ -1,0 +1,28 @@
+{% extends 'navbar.html' %}
+
+{% block body %}
+
+<h1> Update Account Details - Admin Control </h1>
+
+<p class="displayMessage"> This is for the account with username:  </p>
+
+<form method="POST" class="account">
+    <div class="inputRow">
+        <label for="username"> Username </label>
+        <input type="text" id="username" name="username" placeholder="Please enter your desired new username">
+    </div>
+
+    {% if errorMessage %}
+        <div class="errorMessage">
+            {{ errorMessage }}
+        </div>
+    {% endif %}
+
+    <ul class="buttonRow">
+        <li> <button type="submit" class="submit"> Confirm Changes </button> </li>
+        <li> <a href="{{ url_for('adminControls') }}"> <button type="button"> Cancel </button> </a> </li>
+        <li> <a href="{{ url_for('deleteAccount', username=username) }}"> <button type="button" class="delete"> Delete Account </button> </a> </li>
+    </ul>
+</form>
+
+{% endblock %}

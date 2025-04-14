@@ -46,16 +46,16 @@
     {% if allUsers %}
         {% for user in allUsers %}
             <tr>
-                <td> {{ user['username'] }} </td>
+                <a href="{{ url_for('accountDetailsAdminControl', username=user['username']) }}"> <td> {{ user['username'] }} </td> </a>
                 <td> {{ user['admin'] }} </td>
                 <td> 
                     {% for note in user['createdNotes'] %}
-                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} <br> </p> </a>
+                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} </p> </a>
                     {% endfor %}
                 </td>
                 <td> 
                     {% for note in user['receivedNotes'] %}
-                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} <br> </p> </a>
+                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} </p> </a>
                     {% endfor %}
                 </td>
             </tr>

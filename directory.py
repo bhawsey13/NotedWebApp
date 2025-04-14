@@ -316,6 +316,31 @@ def adminControls():
     return render_template("adminControls.html", allNotes=allNotes, allUsers=allUsers)
 
 
+@app.route("/accountDetailsAdminControl/<username>", methods=['GET', 'POST'])
+def accountDetailsAdminControl(username):
+    validUsername = users.find_one({'username': username})
+    if validUsername == None  or  session.get('admin', None) != True:
+        return redirect(url_for('home'))
+
+    errorMessage = None
+    if request.method == 'POST':
+        newUsername = request.form['username']
+        if newUsername == "":
+            errorMessage = "Username field cannot be empty."
+        else:
+            checkUsernameAvailabilty = users.find_one({'username': newUsername})
+            if " " in newUsername:
+                errorMessage = "Invalid username.  Please try again."
+            elif checkUsernameAvailabilty != None:
+                errorMessage = "Username already in use.  Please choose a different one."
+            else:
+                #update all notes created by user with the user's new username
+                notes.update_many({'creatorName': username}, {'$set': {'creatorName': newUsername}})
+                #update the user object with new username
+                users.update_one({'username': username}, {'$set': {'username': newUsername}})
+                errorMessage = "Username successfuly updated"
+
+    return render_template("accountDetailsAdminControl.html", username=username, errorMessage=errorMessage)
 
 
 
