@@ -338,7 +338,7 @@ def accountDetailsAdminControl(username):
                 notes.update_many({'creatorName': username}, {'$set': {'creatorName': newUsername}})
                 #update the user object with new username
                 users.update_one({'username': username}, {'$set': {'username': newUsername}})
-                errorMessage = "Username successfuly updated"
+                return redirect(url_for('adminControls'))
 
     return render_template("accountDetailsAdminControl.html", username=username, errorMessage=errorMessage)
 
