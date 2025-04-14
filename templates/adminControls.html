@@ -50,12 +50,12 @@
                 <td> {{ user['admin'] }} </td>
                 <td> 
                     {% for note in user['createdNotes'] %}
-                        <p> {{ note }} <br> </p>
+                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} <br> </p> </a>
                     {% endfor %}
                 </td>
                 <td> 
                     {% for note in user['receivedNotes'] %}
-                        <p> {{ note }} <br> </p>
+                        <a href="{{ url_for('viewNote', noteID=note) }}"> <p> {{ note }} <br> </p> </a>
                     {% endfor %}
                 </td>
             </tr>
