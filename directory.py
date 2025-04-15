@@ -371,6 +371,8 @@ def downloadNote(noteID):
         "encoding": "UTF-8",
     }
 
+    config = pdfkit.configuration(wkhtmltopdf="static/wkhtmltopdf")
+
     pdf = pdfkit.from_string(content, options=options)   
     headers = {"Content-Disposition": "attachment;filename=myname.pdf"}
     return Response(pdf, mimetype="application/pdf", headers=headers)
