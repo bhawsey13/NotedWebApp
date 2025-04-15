@@ -355,7 +355,7 @@ def downloadNote(noteID):
         return redirect(url_for('home'))
     elif note['privacy'] == 'Private'  and  user == None:
         return redirect(url_for('home'))
-    elif ( noteID not in user['createdNotes']  or  noteID not in user['receivedNotes'] )  and  session.get('admin', None) != True:
+    elif noteID not in user['createdNotes']  and  noteID not in user['receivedNotes']  and  session.get('admin', None) != True:
         #note id not in users's created or received notes and not admin
         return redirect(url_for('home'))
 
