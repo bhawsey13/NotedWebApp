@@ -362,7 +362,7 @@ def downloadNote(noteID):
     content = note['content']
     noteName = note['name']
 
-    config = pdfkit.configuration(wkhtmltopdf="static\\wkhtmltopdf.exe")
+    config = pdfkit.configuration(wkhtmltopdf=".static\\wkhtmltopdf.exe")
     pdf = pdfkit.from_string(content, noteName + '.pdf', configuration=config)
 
     return redirect(url_for('viewNote', noteID=noteID))
