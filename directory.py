@@ -349,7 +349,7 @@ def accountDetailsAdminControl(username):
 
 @app.route("/downloadNote/<noteID>", methods=['GET', 'POST'])
 def downloadNote(noteID):
-    note = notes.find_one({'_id': ObjectID(noteID)})
+    note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
     #if note == None:
         #return redirect(url_for('home'))
