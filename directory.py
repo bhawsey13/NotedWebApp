@@ -7,6 +7,7 @@ from flask_moment import Moment
 from bson.objectid import ObjectId
 from os import environ
 import bcrypt
+import pdfkit
 
 
 #Flask app object
@@ -344,6 +345,33 @@ def accountDetailsAdminControl(username):
                 return redirect(url_for('adminControls'))
 
     return render_template("accountDetailsAdminControl.html", username=username, errorMessage=errorMessage)
+
+
+@app.route("/downloadNote/<noteID>", methods=['GET', 'POST'])
+def downloadNote(noteID):
+    note = notes.find_one({'_id': noteID})
+    user = users.find_one({'username': session.get('username', None)})
+    if note == None:
+        return redirect(url_for('home'))
+    elif note['privacy'] == 'Private'  and  user == None:
+        return redirect(url_for('home'))
+    elif ( noteID not in user['createdNotes']  or  noteID not in user['receivedNotes'] )  and  session.get('admin', None) != True:
+        #note id not in users's created or received notes and not admin
+        return redirect(url_for('home'))
+
+    options = {
+        "orientation": "landscape",
+        "page-size": "A4",
+        "margin-top": "1.0cm",
+        "margin-right": "1.0cm",
+        "margin-bottom": "1.0cm",
+        "margin-left": "1.0cm",
+        "encoding": "UTF-8",
+    }
+
+    pdf = pdfkit.from_string(note['content'], options=options)
+    headers = {"Content-Disposition": "attachment;filename=myname.pdf"}
+    return Response(pdf, mimetype="application/pdf", headers=headers)
 
 
 

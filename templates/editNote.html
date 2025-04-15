@@ -26,7 +26,7 @@
     <ul class="viewNoteButtons">
         <li><button type="submit"> Save </button></li>
         <li><button type="button"> Summarize </button></li>
-        <li><button type="button"> Download PDF </button></li>
+        <li><a href="{{ url_for('downloadNote', noteID=selectedNote['_id']) }}"><button type="button"> Download PDF </button></a></li>
         <li><button type="button"> Text-to-speech </button></li>
         <li><a href="{{ url_for('shareNote', noteID=selectedNote['_id']) }}"><button type="button"> Share </button></a></li>
         <li><a href="{{ url_for('deleteNote', noteID=selectedNote['_id']) }}"><button type="button"> Delete </button></a></li>
