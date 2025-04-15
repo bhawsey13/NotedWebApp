@@ -362,7 +362,7 @@ def downloadNote(noteID):
     content = note['content']
     noteName = note['name']
 
-    config = pdfkit.configuration(wkhtmltopdf="wkhtmltopdf.exe")
+    config = pdfkit.configuration(wkhtmltopdf="/wkhtmltopdf.exe")   #for local hosting must be /public/wkhtmltopdf but is copied to root on vercel when it is hosted online
     pdf = pdfkit.from_string(content, noteName + '.pdf', configuration=config)
 
     return redirect(url_for('viewNote', noteID=noteID))
