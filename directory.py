@@ -7,7 +7,7 @@ from flask_moment import Moment
 from bson.objectid import ObjectId
 from os import environ
 import bcrypt
-import pdfkit
+from weasyprint import HTML
 
 
 #Flask app object
@@ -359,20 +359,14 @@ def downloadNote(noteID):
         #note id not in users's created or received notes and not admin
         #return redirect(url_for('home'))
 
-    options = {
-        "orientation": "landscape",
-        "page-size": "A4",
-        "margin-top": "1.0cm",
-        "margin-right": "1.0cm",
-        "margin-bottom": "1.0cm",
-        "margin-left": "1.0cm",
-        "encoding": "UTF-8",
-    }
+    htmlContent = note['content']
+    pdf = HTML(string=htmlContent).write_pdf()
 
-    pdf = pdfkit.from_string(note['content'], options=options)
-    headers = {"Content-Disposition": "attachment;filename=myname.pdf"}
-    return Response(pdf, mimetype="application/pdf", headers=headers)
+    response = make_response(pdf)
+    response.headers['Content-Type'] = 'application/pdf'
+    response.headers['Content-Disposition'] = 'inline; filename=output.pdf'
 
+    return response
 
 
 if __name__ == '__main__':
