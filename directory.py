@@ -360,23 +360,12 @@ def downloadNote(noteID):
         #return redirect(url_for('home'))
 
     content = note['content']
+    noteName = note['name']
 
-    options = {
-        "orientation": "landscape",
-        "page-size": "A4",
-        "margin-top": "1.0cm",
-        "margin-right": "1.0cm",
-        "margin-bottom": "1.0cm",
-        "margin-left": "1.0cm",
-        "encoding": "UTF-8",
-    }
+    config = pdfkit.configuration(wkhtmltopdf="static\\wkhtmltopdf.exe")
+    pdf = pdfkit.from_string(content, noteName + '.pdf', configuration=config)
 
-    config = pdfkit.configuration(wkhtmltopdf='NotedWebApp/static/wkhtmltopdf/bin/wkhtmltopdf')
-
-    pdf = pdfkit.from_string(content, options=options)   
-    headers = {"Content-Disposition": "attachment;filename=myname.pdf"}
-    return Response(pdf, mimetype="application/pdf", headers=headers)
-
+    return redirect(url_for('viewNote', noteID=noteID))
 
 
 
