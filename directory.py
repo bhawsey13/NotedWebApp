@@ -363,7 +363,8 @@ def downloadNote(noteID):
     content = note['content']
     noteName = note['name']
 
-    wkhtmltopdfexe = open(join('static', 'wkhtmltopdf.exe'), 'r')
+    wkhtmltopdfexe = path.join(process.cwd(), 'static', 'wkhtmltopdf.exe')
+
     config = pdfkit.configuration(wkhtmltopdf = wkhtmltopdfexe)
     pdf = pdfkit.from_string(content, 'downloads/' + noteName + '.pdf', configuration=config)
 
