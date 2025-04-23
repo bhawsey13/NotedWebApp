@@ -9,6 +9,7 @@ from os import environ
 from os.path import join
 import bcrypt
 import pdfkit
+import path
 
 
 #Flask app object
