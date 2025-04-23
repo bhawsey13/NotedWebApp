@@ -6,6 +6,7 @@ from datetime import datetime
 from flask_moment import Moment
 from bson.objectid import ObjectId
 from os import environ
+from os.path import join
 import bcrypt
 import pdfkit
 
@@ -362,7 +363,8 @@ def downloadNote(noteID):
     content = note['content']
     noteName = note['name']
 
-    config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
+    wkhtmltopdfexe = open(join('static', 'wkhtmltopdf.exe'), 'r')
+    config = pdfkit.configuration(wkhtmltopdf = wkhtmltopdfexe)
     pdf = pdfkit.from_string(content, 'downloads/' + noteName + '.pdf', configuration=config)
 
     return redirect(url_for('viewNote', noteID=noteID))
