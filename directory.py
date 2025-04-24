@@ -15,7 +15,7 @@ from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
-ntlk.data.path.append('/nltk_data')
+nltk.data.path.append('/nltk_data')
 
 
 #Flask app object
