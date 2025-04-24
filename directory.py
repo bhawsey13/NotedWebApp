@@ -392,7 +392,8 @@ def summarizeNote(noteID):
     name = note['name']
     content = note['content']
 
-    parser = HtmlParser.from_string(content, Tokenizer("english"))
+    #parser = HtmlParser.from_string(content, Tokenizer("english"))
+    parser = HtmlParser.from_url("https://noted-web-app-two.vercel.app/summarizeNote/" + noteID, Tokenizer("english"))
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words("english")
