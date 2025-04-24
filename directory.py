@@ -103,8 +103,16 @@ def createNote():
 @app.route("/view/<noteID>")
 def viewNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
+    user = users.find_one({'username': session.get('username', None)})
+
     if selectedNote == None:
         return redirect(url_for('home'))
+    elif note['privacy'] == 'Private'  and  user == None:
+        return redirect(url_for('home'))
+    elif user != None:
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+            return redirect(url_for('home'))
+
     elif selectedNote['creatorName'] == session.get('username', None)  or  session.get('admin', None) == True:
         return redirect(url_for('editNote', noteID=noteID))
 
@@ -359,13 +367,15 @@ def accountDetailsAdminControl(username):
 def downloadNote(noteID):
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
-    #if note == None:
-        #return redirect(url_for('home'))
-    #elif note['privacy'] == 'Private'  and  user == None:
-        #return redirect(url_for('home'))
-    #elif noteID not in user['createdNotes']  and  noteID not in user['receivedNotes']  and  session.get('admin', None) != True:
-        #note id not in users's created or received notes and not admin
-        #return redirect(url_for('home'))
+    note = notes.find_one({'_id': ObjectId(noteID)})
+    user = users.find_one({'username': session.get('username', None)})
+    if note == None:
+        return redirect(url_for('home'))
+    elif note['privacy'] == 'Private'  and  user == None:
+        return redirect(url_for('home'))
+    elif user != None:
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+            return redirect(url_for('home'))
 
     content = note['content']
     noteName = note['name']
