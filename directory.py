@@ -82,11 +82,11 @@ def createNote():
                             </td></tr></tbody></table>"""
             elif template == 'Mapping':
                 content = """
-                    <p><strong>Main Topic</strong></p>
+                    <p style="text-align:center;"><strong>Main Topic</strong></p>
                     <table style="width: 100%;">
                         <tbody>
                             <tr><th style="width: 33.3333%;">Subtopic 1</th><th style="width: 33.3333%;">Subtopic 2</th><th style="width: 33.3333%;">Subtopic 3</th></tr>
-                            <tr><th style="width: 33.3333%;">Key Details</th><th style="width: 33.3333%;">Subtopic 2</th><th style="width: 33.3333%;">Subtopic 3</th></tr>
+                            <tr><td style="width: 33.3333%;">Key Details</td><td style="width: 33.3333%;">Key Details</td><td style="width: 33.3333%;">Key Details</td></tr>
                             <tr><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li>
                             <li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td></tr>
                         </tbody>
@@ -122,8 +122,7 @@ def viewNote(noteID):
     elif user != None:
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
-
-    elif selectedNote['creatorName'] == session.get('username', None)  or  session.get('admin', None) == True:
+    if selectedNote['creatorName'] == session.get('username', None)  or  session.get('admin', None) == True:
         return redirect(url_for('editNote', noteID=noteID))
 
     return render_template("viewNote.html", selectedNote=selectedNote)
