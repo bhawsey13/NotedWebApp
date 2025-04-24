@@ -9,8 +9,8 @@ from os import environ
 import bcrypt
 import pdfkit
 
-from sumy.parsers.html import HtmlParser
-#from sumy.parsers.plaintext import PlaintextParser
+#from sumy.parsers.html import HtmlParser
+from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
@@ -390,11 +390,17 @@ def summarizeNote(noteID):
         #return redirect(url_for('home'))
 
     name = note['name']
-    content = note['content']
+    #content = note['content']
+    content = """ Summarization
+    Condensing a large paragrpah down into a smaller more digestable form.
+    Usually should be between four to six sentenses or around one hundred words.
+    Should not include specific details such as dates or miniscule information.
+    Should be broad enough to encompass the whole point.
+    """
 
-    parser = HtmlParser.from_string(content, Tokenizer("english"))
+    #parser = HtmlParser.from_string(content, Tokenizer("english"))
     #parser = HtmlParser.from_url("https://noted-web-app-two.vercel.app/summarizeNote/" + noteID, Tokenizer("english"))
-    #parser = PlaintextParser.from_string(content, Tokenizer("english"))
+    parser = PlaintextParser.from_string(content, Tokenizer("english"))
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words("english")
