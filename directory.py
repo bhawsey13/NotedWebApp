@@ -10,6 +10,7 @@ import bcrypt
 import pdfkit
 
 from sumy.parsers.html import HtmlParser
+from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
@@ -391,11 +392,11 @@ def summarizeNote(noteID):
     name = note['name']
     content = note['content']
 
-    parser = HTMLParser.from_string(content, Tokenizer("english"))
+    parser = HtmlParser.from_string(content, Tokenizer("english"))
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words("english")
-    summary = summarizer(parser.document, sentences_count=6)  # You can adjust the number of sentences in the summary
+    summary = summarizer(parser.document, sentences_count=4)  # You can adjust the number of sentences in the summary
 
     return render_template("viewSummary.html", summary=summary, name=name)
 
