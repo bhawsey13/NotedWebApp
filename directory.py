@@ -8,8 +8,7 @@ from bson.objectid import ObjectId
 from os import environ
 import bcrypt
 import pdfkit
-
-#from sumy.parsers.html import HtmlParser
+import re
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
@@ -390,17 +389,13 @@ def summarizeNote(noteID):
         #return redirect(url_for('home'))
 
     name = note['name']
-    #content = note['content']
-    content = """ 
-        Multi-document extractive summarization faces a problem of redundancy. Ideally, we want to extract sentences that are both "central" (i.e., contain the main ideas) and "diverse" (i.e., they differ from one another). For example, in a set of news articles about some event, each article is likely to have many similar sentences. To address this issue, LexRank applies a heuristic post-processing step that adds sentences in rank order, but discards sentences that are too similar to ones already in the summary. This method is called Cross-Sentence Information Subsumption (CSIS). These methods work based on the idea that sentences "recommend" other similar sentences to the reader. Thus, if one sentence is very similar to many others, it will likely be a sentence of great importance. Its importance also stems from the importance of the sentences "recommending" it. Thus, to get ranked highly and placed in a summary, a sentence must be similar to many sentences that are in turn also similar to many other sentences. This makes intuitive sense and allows the algorithms to be applied to an arbitrary new text. The methods are domain-independent and easily portable. One could imagine the features indicating important sentences in the news domain might vary considerably from the biomedical domain. However, the unsupervised "recommendation"-based approach applies to any domain. A related method is Maximal Marginal Relevance (MMR),[21] which uses a general-purpose graph-based ranking algorithm like Page/Lex/TextRank that handles both "centrality" and "diversity" in a unified mathematical framework based on absorbing Markov chain random walks (a random walk where certain states end the walk). The algorithm is called GRASSHOPPER.[22] In addition to explicitly promoting diversity during the ranking process, GRASSHOPPER incorporates a prior ranking (based on sentence position in the case of summarization). The state of the art results for multi-document summarization are obtained using mixtures of submodular functions. These methods have achieved the state of the art results for Document Summarization Corpora, DUC 04 - 07.[23] Similar results were achieved with the use of determinantal point processes (which are a special case of submodular functions) for DUC-04.[24] A new method for multi-lingual multi-document summarization that avoids redundancy generates ideograms to represent the meaning of each sentence in each document, then evaluates similarity by comparing ideogram shape and position. It does not use word frequency, training or preprocessing. It uses two user-supplied parameters: equivalence (when are two sentences to be considered equivalent?) and relevance (how long is the desired summary?).
-    """
+    content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content so that plaintext parser can understand
 
-    #parser = HtmlParser.from_string(content, Tokenizer("english"))
     parser = PlaintextParser.from_string(content, Tokenizer("english"))
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer()
     summarizer.stop_words = get_stop_words("english")
-    summary = summarizer(parser.document, sentences_count=4)  # You can adjust the number of sentences in the summary
+    summary = summarizer(parser.document, sentences_count=3)  # You can adjust the number of sentences in the summary
 
     return render_template("viewSummary.html", summary=summary, name=name)
 
