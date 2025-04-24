@@ -9,7 +9,7 @@ from os import environ
 import bcrypt
 import pdfkit
 
-from sumy.parsers.html import HtmlParser
+#from sumy.parsers.html import HtmlParser
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
 from sumy.summarizers.lsa import LsaSummarizer
@@ -393,7 +393,8 @@ def summarizeNote(noteID):
     content = note['content']
 
     #parser = HtmlParser.from_string(content, Tokenizer("english"))
-    parser = HtmlParser.from_url("https://noted-web-app-two.vercel.app/summarizeNote/" + noteID, Tokenizer("english"))
+    #parser = HtmlParser.from_url("https://noted-web-app-two.vercel.app/summarizeNote/" + noteID, Tokenizer("english"))
+    parser = PlaintextParser.from_string(content, Tokenizer("english"))
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer(stemmer)
     summarizer.stop_words = get_stop_words("english")
