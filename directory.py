@@ -9,6 +9,15 @@ from os import environ
 import bcrypt
 import pdfkit
 
+from sumy.parsers.plaintext import PlaintextParser
+from sumy.nlp.tokenizers import Tokenizer
+from sumy.summarizers.lsa import LsaSummarizer
+from sumy.nlp.stemmers import Stemmer
+from sumy.utils import get_stop_words
+import nltk
+nltk.download('punkt')
+nltk.download('punkt_tab')
+
 
 #Flask app object
 app = Flask(__name__)
@@ -362,10 +371,34 @@ def downloadNote(noteID):
     content = note['content']
     noteName = note['name']
 
-    #config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf')
-    pdf = pdfkit.from_string(content, 'downloads/' + noteName + '.pdf')
+    config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf.exe')
+    pdf = pdfkit.from_string(content, noteName + '.pdf', config)
 
     return redirect(url_for('viewNote', noteID=noteID))
+
+
+@app.route("/summarizeNote/<noteID>", methods=['GET', 'POST'])
+def summarizeNote(noteID):
+    note = notes.find_one({'_id': ObjectId(noteID)})
+    user = users.find_one({'username': session.get('username', None)})
+    #if note == None:
+        #return redirect(url_for('home'))
+    #elif note['privacy'] == 'Private'  and  user == None:
+        #return redirect(url_for('home'))
+    #elif noteID not in user['createdNotes']  and  noteID not in user['receivedNotes']  and  session.get('admin', None) != True:
+        #note id not in users's created or received notes and not admin
+        #return redirect(url_for('home'))
+
+    name = note['name']
+    content = note['content']
+
+    parser = PlaintextParser.from_string(content, Tokenizer("english"))
+    stemmer = Stemmer("english")
+    summarizer = LsaSummarizer(stemmer)
+    summarizer.stop_words = get_stop_words("english")
+    summary = summarizer(parser.document, sentences_count=6)  # You can adjust the number of sentences in the summary
+
+    return render_template("viewSummary.html", summary=summary, name=name)
 
 
 

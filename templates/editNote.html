@@ -25,7 +25,7 @@
 <form method="POST">
     <ul class="viewNoteButtons">
         <li><button type="submit"> Save </button></li>
-        <li><button type="button"> Summarize </button></li>
+        <li><a href="{{ url_for('summarizeNote', noteID=selectedNote['_id']) }}"><button type="button"> Summarize </button></a></li>
         <li><a href="{{ url_for('downloadNote', noteID=selectedNote['_id']) }}"><button type="button"> Download PDF </button></a></li>
         <li><button type="button"> Text-to-speech </button></li>
         <li><a href="{{ url_for('shareNote', noteID=selectedNote['_id']) }}"><button type="button"> Share </button></a></li>
