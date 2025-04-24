@@ -380,13 +380,12 @@ def downloadNote(noteID):
 def summarizeNote(noteID):
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
-    #if note == None:
-        #return redirect(url_for('home'))
-    #elif note['privacy'] == 'Private'  and  user == None:
-        #return redirect(url_for('home'))
-    #elif noteID not in user['createdNotes']  and  noteID not in user['receivedNotes']  and  session.get('admin', None) != True:
-        #note id not in users's created or received notes and not admin
-        #return redirect(url_for('home'))
+    if note == None:
+        return redirect(url_for('home'))
+    elif note['privacy'] == 'Private'  and  user == None:
+        return redirect(url_for('home'))
+    elif noteID not in user['createdNotes']  and  noteID not in user['receivedNotes']  and  session.get('admin', None) != True:         #note id not in users's created or received notes and not admin
+        return redirect(url_for('home'))
 
     name = note['name']
     content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content so that plaintext parser can understand
@@ -395,7 +394,7 @@ def summarizeNote(noteID):
     stemmer = Stemmer("english")
     summarizer = LsaSummarizer()
     summarizer.stop_words = get_stop_words("english")
-    summary = summarizer(parser.document, sentences_count=3)  # You can adjust the number of sentences in the summary
+    summary = summarizer(parser.document, sentences_count=4)  # You can adjust the number of sentences in the summary
 
     return render_template("viewSummary.html", summary=summary, name=name)
 
