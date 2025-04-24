@@ -15,8 +15,6 @@ from sumy.summarizers.lsa import LsaSummarizer
 from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
-#nltk.download('punkt')
-#nltk.download('punkt_tab')
 
 
 #Flask app object

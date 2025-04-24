@@ -4,6 +4,12 @@
 
 <h1> {{ name }} - Summary </h1>
 
-<p class="displayMessage" style="text-align: center;"> {{ summary }} </p>
+<p class="displayMessage" style="text-align: center;"> 
+    {% if summary %} 
+        {% for sentence in summary %}
+            {{ sentence }}
+        {% endfor %}
+    {% endif %}
+</p>
 
 {% endblock %}
