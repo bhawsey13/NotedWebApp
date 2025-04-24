@@ -82,15 +82,11 @@ def createNote():
                             </td></tr></tbody></table>"""
             elif template == 'Mapping':
                 content = """
-                    <p style="text-align:center;"><strong>Main Topic</strong></p>
-                    <table style="width: 100%;">
-                        <tbody>
+                            <p style="text-align:center;"><strong>Main Topic</strong></p><table style="width: 100%;"><tbody>
                             <tr><th style="width: 33.3333%;">Subtopic 1</th><th style="width: 33.3333%;">Subtopic 2</th><th style="width: 33.3333%;">Subtopic 3</th></tr>
-                            <tr><td style="width: 33.3333%;">Key Details</td><td style="width: 33.3333%;">Key Details</td><td style="width: 33.3333%;">Key Details</td></tr>
+                            <tr><td style="width: 33.3333%; text-align:center;">Key Details</td><td style="width: 33.3333%; text-align:center;">Key Details</td><td style="width: 33.3333%; text-align:center;">Key Details</td></tr>
                             <tr><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li>
-                            <li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td></tr>
-                        </tbody>
-                    </table>
+                            <li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td></tr></tbody></table>
                 """
             elif template == 'Outlining':
                 content = """<p><strong>Main Topic</strong></p><ul><li>Subtopic 1<ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul></li></ul><ul><li>Subtopic 2<ul><li>Key point 1</li>
@@ -156,7 +152,10 @@ def deleteNote(noteID):
         #delete note from user's received notes and created notes
         users.update_one({'username': selectedNote['creatorName']}, {'$pull': {'createdNotes': ObjectId(noteID)}})
         users.update_many({'receivedNotes': {'$in': [ObjectId(noteID)]}}, {'$pull': {'receivedNotes': ObjectId(noteID)}})
-        return redirect(url_for('noteList', filterBy='yourNotes'))
+        if session.get('admin', None) == True:
+            return redirect(url_for('adminControls'))
+        else: 
+            return redirect(url_for('noteList', filterBy='yourNotes'))
 
     return render_template("deleteNote.html", selectedNote=selectedNote)
 
