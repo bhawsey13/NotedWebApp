@@ -16,7 +16,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
-from elevenlabs.client import elevenlabs
+from elevenlabs.client import ElevenLabs
 from elevenlabs import play
 
 
@@ -39,8 +39,8 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protect against XSS
 #Configure DB connection
 #client = MongoClient('localhost', 27017)
 uri = environ.get('MONGODB_URI')
-client = MongoClient(uri, server_api=ServerApi('1'))
-db = client.NotedWebApp
+dbclient = MongoClient(uri, server_api=ServerApi('1'))
+db = dbclient.NotedWebApp
 notes = db.notes
 users = db.users
 
@@ -48,6 +48,9 @@ users = db.users
 #configure Moment for capturing timezone accurate DateTime
 moment = Moment(app)
 
+
+#configure ElevenLabs api
+elclient = ElevenLabs(api_key=environ.get('ELEVENLABS_API_KEY'))
 
 
 
@@ -433,8 +436,7 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content
-    client = ElevenLabs(api_key=environ.get('ELEVENLABS_API_KEY'))
-    audio = client.text_to_speech.convert(
+    audio = elclient.text_to_speech.convert(
         text=content,
         voice_id="JBFqnCBsd6RMkjVDRZzb",
         model_id="eleven_multilingual_v2",
