@@ -438,7 +438,7 @@ def ttsNote(noteID):
     fp = BytesIO()
     tts.write_to_fp(fp)
     fp.seek(0)
-    audio = AudioSegment.from_file(fp, format='mp3')
+    audio = AudioSegment.from_mp3(fp)
     play(audio)
 
     return redirect(url_for('viewNote', noteID=noteID))
