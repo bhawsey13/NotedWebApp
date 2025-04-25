@@ -17,7 +17,7 @@ from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
 from elevenlabs.client import ElevenLabs
-from elevenlabs import play
+from elevenlabs import stream
 
 
 #Flask app object
@@ -436,13 +436,12 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content
-    audio = elclient.text_to_speech.convert(
+    audio = elclient.text_to_speech.convert_as_stream(
         text=content,
         voice_id="JBFqnCBsd6RMkjVDRZzb",
         model_id="eleven_multilingual_v2",
-        output_format="mp3",
     )
-    play(audio)
+    stream(audio)
 
     return redirect(url_for('viewNote', noteID=noteID))
 
