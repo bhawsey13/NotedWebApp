@@ -17,6 +17,7 @@ from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
 from gtts import gTTS
+from playsound import playsound 
 
 
 #Flask app object
@@ -432,7 +433,9 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     tts = gTTS(note['content'])
-    tts.save('/tmp/' + noteID + '.mp3')
+    filename = '/tmp/' + noteID + '.mp3'
+    tts.save(filename)
+    playsound(filename)
 
     return redirect(url_for('viewNote', noteID=noteID))
 
