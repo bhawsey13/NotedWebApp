@@ -432,7 +432,7 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     tts = gTTS(note['content'], 'en')
-    tts.save('/static/' + note['_id'] + '.mp3')
+    tts.save('/static/' + noteID + '.mp3')
 
     return redirect(url_for('viewNote', noteID=noteID))
 
