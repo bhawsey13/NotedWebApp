@@ -431,7 +431,7 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    tts = gTTS(note['content'], 'en')
+    tts = gTTS(note['content'])
     tts.save('/tmp/' + noteID + '.mp3')
 
     return redirect(url_for('viewNote', noteID=noteID))
