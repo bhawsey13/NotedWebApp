@@ -442,7 +442,7 @@ def ttsNote(noteID):
         model_id="eleven_multilingual_v2",
         output_format="mp3_44100_128",
     )
-    play(audio)
+    play(audio, use_ffmpeg=False)
 
     return redirect(url_for('viewNote', noteID=noteID))
 
