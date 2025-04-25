@@ -16,8 +16,8 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
-from gtts import gTTS
-from playsound3 import playsound 
+from elevenlabs.client import elevenlabs
+from elevenlabs import play
 
 
 #Flask app object
@@ -433,10 +433,14 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content
-    tts = gTTS(content)
-    filename = '/tmp/' + noteID + '.mp3'
-    tts.save(filename)
-    playsound(filename)
+    client = ElevenLabs(api_key=environ.get('ELEVENLABS_API_KEY'))
+    audio = client.text_to_speech.convert(
+        text=content,
+        voice_id="JBFqnCBsd6RMkjVDRZzb",
+        model_id="eleven_multilingual_v2",
+        output_format="mp3_44100_128",
+    )
+    play(audio)
 
     return redirect(url_for('viewNote', noteID=noteID))
 
