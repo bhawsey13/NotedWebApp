@@ -17,8 +17,6 @@ from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
 from gtts import gTTS
-from io import BytesIO
-from mpg123 import Mpg123, Out123
 
 
 #Flask app object
@@ -434,16 +432,7 @@ def ttsNote(noteID):
             return redirect(url_for('home'))
 
     tts = gTTS(note['content'], 'en')
-
-    fp = BytesIO()
-    tts.write_to_fp(fp)
-    fp.seek(0)
-    
-    mp3 = Mpg123()
-    mp3.feed(fp.read())
-    out = Out123()
-    for frame in mp3.iter_frames(out.start):
-        out.play(frame)
+    tts.save('/static/' + note['_id'] + '.mp3')
 
     return redirect(url_for('viewNote', noteID=noteID))
 
