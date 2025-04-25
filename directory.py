@@ -16,7 +16,10 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
-import pyttsx3
+from gtts import gTTS
+from io import BytesIO
+from pydub import AudioSegment
+from pydub.playback import play
 
 
 #Flask app object
@@ -431,12 +434,12 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    engine = pyttsx3.init()
-    engine.setProperty('rate', 135)
-    engine.setProperty('volume', 0.7)
-    engine.setProperty('voice', engine.getProperty('voices')[1].id)
-    engine.say(note['content'])
-    engine.runAndWait()
+    tts = gTTS(text=note['content'], lang='en')
+    fp = BytesIO()
+    tts.write_to_fp(fp)
+    fp.seek(0)
+    audio = AudioSegment.from_file(fp, format='mp3')
+    play(audio)
 
     return redirect(url_for('viewNote', noteID=noteID))
 

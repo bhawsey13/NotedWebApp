@@ -18,6 +18,7 @@ Flask-Moment==1.0.6
 Flask-Session==0.8.0
 Flask-TinyMCE==1.0.0
 fonttools==4.57.0
+gtts==2.5.4
 idna==3.10
 itsdangerous==2.2.0
 Jinja2==3.1.5
@@ -32,10 +33,10 @@ pdfkit==1.0.0
 pillow==11.2.1
 pycountry==24.6.1
 pycparser==2.22
+pudub==0.25.1
 pydyf==0.11.0
 pymongo==4.11
 pyphen==0.17.2
-pyttsx3==2.90
 regex==2024.11.6
 requests==2.32.3
 sumy==0.11.0
