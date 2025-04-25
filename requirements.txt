@@ -45,6 +45,7 @@ tinycss2==1.4.0
 tinyhtml5==2.0.0
 tqdm==4.67.1
 urllib3==2.4.0
+vext.gi==0.7.4
 weasyprint==65.1
 webencodings==0.5.1
 Werkzeug==3.1.3
