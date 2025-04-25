@@ -9,7 +9,6 @@ chardet==5.2.0
 charset-normalizer==3.4.1
 click==8.1.8
 colorama==0.4.6
-comtypes==1.4.10
 cssselect2==0.8.0
 dnspython==2.7.0
 docopt==0.6.2
@@ -36,9 +35,7 @@ pycparser==2.22
 pydyf==0.11.0
 pymongo==4.11
 pyphen==0.17.2
-pypiwin32==223
 pyttsx3==2.98
-pywin32==310
 regex==2024.11.6
 requests==2.32.3
 sumy==0.11.0
