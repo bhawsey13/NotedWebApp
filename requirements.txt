@@ -40,6 +40,8 @@ pymongo==4.11
 pyphen==0.17.2
 regex==2024.11.6
 requests==2.32.3
+ruamel.yaml==0.18.10 
+ruamel.yaml.clib==0.2.12
 sumy==0.11.0
 tinycss2==1.4.0
 tinyhtml5==2.0.0
