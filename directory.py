@@ -17,7 +17,7 @@ from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
 from gtts import gTTS
-from playsound import playsound 
+from playsound3 import playsound 
 
 
 #Flask app object
@@ -432,7 +432,8 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    tts = gTTS(note['content'])
+    content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content
+    tts = gTTS(content)
     filename = '/tmp/' + noteID + '.mp3'
     tts.save(filename)
     playsound(filename)
