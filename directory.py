@@ -16,6 +16,7 @@ from sumy.nlp.stemmers import Stemmer
 from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
+import pyttsx3
 
 
 #Flask app object
@@ -416,6 +417,29 @@ def summarizeNote(noteID):
     summary = summarizer(parser.document, sentences_count=4)  # You can adjust the number of sentences in the summary
 
     return render_template("viewSummary.html", summary=summary, name=name)
+
+
+@app.route("/ttsNote/<noteID>", methods=['GET', 'POST'])
+def ttsNote(noteID):
+    note = notes.find_one({'_id': ObjectId(noteID)})
+    user = users.find_one({'username': session.get('username', None)})
+    if note == None:
+        return redirect(url_for('home'))
+    elif note['privacy'] == 'Private'  and  user == None:
+        return redirect(url_for('home'))
+    elif user != None:
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+            return redirect(url_for('home'))
+
+    engine = pyttsx3.init()
+    engine.setProperty('rate', 135)
+    engine.setProperty('volume', 0.7)
+    engine.setProperty('voice', engine.getProperty('voices')[1].id)
+    engine.say(note['content'])
+    engine.runAndWait()
+
+    return redirect(url_for('viewNote', noteID=noteID))
+
 
 
 
