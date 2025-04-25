@@ -18,8 +18,7 @@ import nltk
 nltk.data.path.append('nltk_data')
 from gtts import gTTS
 from io import BytesIO
-from pydub import AudioSegment
-from pydub.playback import play
+from mpg123 import Mpg123, Out123
 
 
 #Flask app object
@@ -434,12 +433,17 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    tts = gTTS(text=note['content'], lang='en')
+    tts = gTTS(note['content'], 'en')
+
     fp = BytesIO()
     tts.write_to_fp(fp)
     fp.seek(0)
-    audio = AudioSegment.from_mp3(fp)
-    play(audio)
+    
+    mp3 = Mpg123()
+    mp3.feed(fp.read())
+    out = Out123()
+    for frame in mp3.iter_frames(out.start):
+        out.play(frame)
 
     return redirect(url_for('viewNote', noteID=noteID))
 

@@ -25,6 +25,7 @@ Jinja2==3.1.5
 joblib==1.4.2
 lxml==5.4.0
 MarkupSafe==3.0.2
+mpg123==0.4
 msgspec==0.19.0
 nltk==3.9.1
 numpy==2.2.5
@@ -33,7 +34,6 @@ pdfkit==1.0.0
 pillow==11.2.1
 pycountry==24.6.1
 pycparser==2.22
-pydub==0.25.1
 pydyf==0.11.0
 pymongo==4.11
 pyphen==0.17.2
