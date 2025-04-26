@@ -435,9 +435,8 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content
     audio = elclient.text_to_speech.convert(
-        text=content,
+        text=note['content'],
         voice_id="JBFqnCBsd6RMkjVDRZzb",
         model_id="eleven_multilingual_v2",
         output_format="mp3_44100_128",
