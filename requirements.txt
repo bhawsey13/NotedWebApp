@@ -31,8 +31,6 @@ numpy==2.2.5
 packaging==24.2
 pdfkit==1.0.0
 pillow==11.2.1
-portaudio19-dev
-pyaudio==0.2.14
 pycountry==24.6.1
 pycparser==2.22
 pydyf==0.11.0
