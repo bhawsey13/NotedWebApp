@@ -400,7 +400,7 @@ def downloadNote(noteID):
         "encoding": "UTF-8",
     }
 
-    config = pdfkit.configuration(wkhtmltopdf = '/vercel/output/static/wkhtmltopdf.exe')
+    config = pdfkit.configuration(wkhtmltopdf = '/static/wkhtmltopdf.exe')
     #config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
     #config = pdfkit.configuration(wkhtmltopdf = open(join('static', 'wkhtmltopdf.exe'), 'r'))
     pdf = pdfkit.from_string(content, options=options, configuration=config)
