@@ -402,7 +402,7 @@ def downloadNote(noteID):
 
     #config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf.exe')     url_for('static', filename='tinymce/js/tinymce/tinymce.min.js')
     config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
-    pdf = pdfkit.from_string(content, options=options, config)
+    pdf = pdfkit.from_string(content, options=options, configuration=config)
     response = make_response(pdf)
     response.headers["Content-Type"] = "application/pdf"
     response.headers["Content-Disposition"] = "inline; filename="+noteName+".pdf"
