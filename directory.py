@@ -8,6 +8,8 @@ from bson.objectid import ObjectId
 from os import environ
 import bcrypt
 import pdfkit
+from http.server import BaseHTTPRequestHandler
+from os.path import join
 import re
 from sumy.parsers.plaintext import PlaintextParser
 from sumy.nlp.tokenizers import Tokenizer
@@ -401,7 +403,8 @@ def downloadNote(noteID):
     }
 
     #config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf.exe')     url_for('static', filename='tinymce/js/tinymce/tinymce.min.js')
-    config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
+    #config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
+    config = pdfkit.configuration(wkhtmltopdf = open(join('static', 'wkhtmltopdf.exe'), 'r'))
     pdf = pdfkit.from_string(content, options=options, configuration=config)
     response = make_response(pdf)
     response.headers["Content-Type"] = "application/pdf"

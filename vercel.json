@@ -5,10 +5,5 @@
     ],
     "routes": [
         {"src": "/(.*)", "dest": "directory.py"}
-    ],
-    "functions": {
-        "directory.py": {
-            "includeFiles": "/static/wkhtmltopdf.exe"
-        }
-    }
+    ]
 }
