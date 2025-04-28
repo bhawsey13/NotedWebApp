@@ -1,4 +1,4 @@
-from flask import Flask, redirect, url_for, request, render_template, session
+from flask import Flask, redirect, url_for, request, render_template, session, make_response
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from flask_session import Session
@@ -380,8 +380,6 @@ def accountDetailsAdminControl(username):
 def downloadNote(noteID):
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
-    note = notes.find_one({'_id': ObjectId(noteID)})
-    user = users.find_one({'username': session.get('username', None)})
     if note == None:
         return redirect(url_for('home'))
     elif note['privacy'] == 'Private'  and  user == None:
@@ -390,13 +388,27 @@ def downloadNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
-    content = note['content']
     noteName = note['name']
+    content = '<style> th, td, tr, table {border: 1px solid #333;} </style>  <span style="width:100%; text-align:center;"><h1>' + noteName + '</h1></span>' + note['content']
+    options = {
+        "orientation": "landscape",
+        "page-size": "A4",
+        "margin-top": "1.0cm",
+        "margin-right": "1.0cm",
+        "margin-bottom": "1.0cm",
+        "margin-left": "1.0cm",
+        "encoding": "UTF-8",
+    }
 
-    config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf.exe')
-    pdf = pdfkit.from_string(content, noteName + '.pdf', config)
+    #config = pdfkit.configuration(wkhtmltopdf = 'wkhtmltopdf.exe')
+    #pdf = pdfkit.from_string(content, 'tmp/' + noteName + '.pdf', config)
+    #pdf = pdfkit.from_string(content, 'tmp/' + noteName + '.pdf', options)
+    pdf = pdfkit.from_string(content, options=options)
+    response = make_response(pdf)
+    response.headers["Content-Type"] = "application/pdf"
+    response.headers["Content-Disposition"] = "inline; filename="+noteName+".pdf"
+    return response
 
-    return redirect(url_for('viewNote', noteID=noteID))
 
 
 @app.route("/summarizeNote/<noteID>", methods=['GET', 'POST'])
