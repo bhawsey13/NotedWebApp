@@ -20,6 +20,13 @@ from elevenlabs.client import ElevenLabs
 from elevenlabs import play
 
 
+#env variables for local hosting
+import os
+os.environ['SECRET_KEY'] = 'thisismytempsecretkey'
+os.environ['MONGODB_URI'] = 'mongodb+srv://bhawsey13:SouthAfrica23@notedwebapp.o18gk.mongodb.net/?retryWrites=true&w=majority&appName=NotedWebApp'
+os.environ['ELEVENLABS_API_KEY'] = 'sk_1bd0d20861b6c07a178b888789f331518bce7fab480ef3c1'
+
+
 #Flask app object
 app = Flask(__name__)
 
@@ -37,7 +44,6 @@ app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protect against XSS
 
 
 #Configure DB connection
-#client = MongoClient('localhost', 27017)
 uri = environ.get('MONGODB_URI')
 dbclient = MongoClient(uri, server_api=ServerApi('1'))
 db = dbclient.NotedWebApp
@@ -400,7 +406,7 @@ def downloadNote(noteID):
         "encoding": "UTF-8",
     }
 
-    config = pdfkit.configuration(wkhtmltopdf = '/static/wkhtmltopdf.exe')
+    config = pdfkit.configuration(wkhtmltopdf = 'static/wkhtmltopdf.exe')
     #config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
     #config = pdfkit.configuration(wkhtmltopdf = open(join('static', 'wkhtmltopdf.exe'), 'r'))
     pdf = pdfkit.from_string(content, options=options, configuration=config)
