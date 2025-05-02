@@ -9,15 +9,18 @@
 
 <h1> {{ selectedNote['name'] }} </h1>
 
-<h4> {{ selectedNote['template'] }} Template </h4>
-<h4> Created by {{ selectedNote['creatorName'] }} on {{ moment( selectedNote['creationDateTime'] ).format('LLL') }} </h4>
-<h4> Last edited on {{ moment( selectedNote['lastSavedEditDateTime'] ).format('LLL') }}</h4>
+<h4> {{ selectedNote['template'] }} Template - Created by {{ selectedNote['creatorName'] }} on {{ moment( selectedNote['creationDateTime'] ).format('LLL') }} - Last edited on {{ moment( selectedNote['lastSavedEditDateTime'] ).format('LLL') }}</h4>
 
 <script type="text/javascript" src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
 <script type="text/javascript">
     tinymce.init({
         selector: 'textarea#text-editor-view',
-        height: 300,
+        plugins: 'wordcount fullscreen',
+        menubar: 'view tools',
+        removed_menuitems: 'visualaid',
+        toolbar: '',
+        min_height: 300,
+        height: 400,
         editable_root: false
     });
 </script>
