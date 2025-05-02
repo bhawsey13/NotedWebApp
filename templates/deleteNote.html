@@ -29,7 +29,7 @@
     </table>
 
     <ul class="buttonRow"> 
-        <li> <a href="{{ url_for('accountDetails') }}"> <button type="button"> Cancel </button> </a> </li>
+        <li> <a href="{{ url_for('viewNote', noteID=selectedNote['_id']) }}"> <button type="button"> Cancel </button> </a> </li>
         <li> <button type="submit" class="delete"> Delete </button> </li>
     </ul>
 

@@ -1,11 +1,10 @@
 from flask import Flask, redirect, url_for, request, render_template, session, make_response
 from pymongo import MongoClient
 from pymongo.server_api import ServerApi
-from flask_session import Session
 from datetime import datetime
 from flask_moment import Moment
 from bson.objectid import ObjectId
-from os import environ
+import os
 import bcrypt
 import pdfkit
 import re
@@ -17,14 +16,7 @@ from sumy.utils import get_stop_words
 import nltk
 nltk.data.path.append('nltk_data')
 from elevenlabs.client import ElevenLabs
-from elevenlabs import play
-
-
-#env variables for local hosting
-import os
-os.environ['SECRET_KEY'] = 'thisismytempsecretkey'
-os.environ['MONGODB_URI'] = 'mongodb+srv://bhawsey13:SouthAfrica23@notedwebapp.o18gk.mongodb.net/?retryWrites=true&w=majority&appName=NotedWebApp'
-os.environ['ELEVENLABS_API_KEY'] = 'sk_1bd0d20861b6c07a178b888789f331518bce7fab480ef3c1'
+from elevenlabs import save
 
 
 #Flask app object
@@ -32,19 +24,17 @@ app = Flask(__name__)
 
 
 #secret key
-app.secret_key = environ.get('SECRET_KEY')
+app.secret_key = os.getenv('SECRET_KEY')
 
 
 #Configure session
-#app.config['SESSION_PERMANENT'] = False
-#app.config['SESSION_TYPE'] = "filesystem"
-#Session(app)
-app.config['SESSION_COOKIE_SECURE'] = True  # Only send cookies over HTTPS
-app.config['SESSION_COOKIE_HTTPONLY'] = True  # Protect against XSS
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_COOKIE_SECURE'] = True      #Only send cookies over HTTPS
+app.config['SESSION_COOKIE_HTTPONLY'] = True    #Protect against XSS
 
 
 #Configure DB connection
-uri = environ.get('MONGODB_URI')
+uri = os.getenv('MONGODB_URI')
 dbclient = MongoClient(uri, server_api=ServerApi('1'))
 db = dbclient.NotedWebApp
 notes = db.notes
@@ -56,7 +46,7 @@ moment = Moment(app)
 
 
 #configure ElevenLabs api
-elclient = ElevenLabs(api_key=environ.get('ELEVENLABS_API_KEY'))
+elclient = ElevenLabs(api_key=os.getenv('ELEVENLABS_API_KEY'))
 
 
 
@@ -77,8 +67,8 @@ def createNote():
     if request.method == 'POST':
         if request.form['name'] != "" :
             noteID = ObjectId()
-            creatorID = users.find_one({'username': session['username']}, {'_id': 1})['_id']
-            creatorName = session['username']
+            creatorID = users.find_one({'username': session.get('username', None)}, {'_id': 1})['_id']
+            creatorName = session.get('username', None)
             creationDateTime = str(datetime.utcnow())
             lastSavedEditDateTime = str(datetime.utcnow())
             name = request.form['name']
@@ -92,13 +82,11 @@ def createNote():
                             <td style="text-align: center;" colspan="2"><p><strong>Summary</strong></p><p style="text-align: left;">After class: Summary of the lesson and highlighting key points</p>
                             </td></tr></tbody></table>"""
             elif template == 'Mapping':
-                content = """
-                            <p style="text-align:center;"><strong>Main Topic</strong></p><table style="width: 100%;"><tbody>
+                content = """<p style="text-align:center;"><strong>Main Topic</strong></p><table style="width: 100%;"><tbody>
                             <tr><th style="width: 33.3333%;">Subtopic 1</th><th style="width: 33.3333%;">Subtopic 2</th><th style="width: 33.3333%;">Subtopic 3</th></tr>
                             <tr><td style="width: 33.3333%; text-align:center;">Key Details</td><td style="width: 33.3333%; text-align:center;">Key Details</td><td style="width: 33.3333%; text-align:center;">Key Details</td></tr>
                             <tr><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li>
-                            <li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td></tr></tbody></table>
-                """
+                            <li>Point 3</li></ol></td><td style="width: 33.3333%;"><ol><li>Point 1</li><li>Point 2</li><li>Point 3</li></ol></td></tr></tbody></table>"""
             elif template == 'Outlining':
                 content = """<p><strong>Main Topic</strong></p><ul><li>Subtopic 1<ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul></li></ul><ul><li>Subtopic 2<ul><li>Key point 1</li>
                             <li>Key point 2</li><li>Key point 3</li></ul></li></ul><ul><li>Subtopic 3<ul><li>Key point 1</li><li>Key point 2</li><li>Key point 3</li></ul></li></ul>"""
@@ -111,7 +99,7 @@ def createNote():
 
             notes.insert_one({'_id':  noteID, 'name': name, 'creatorName': creatorName, 'creatorID': creatorID, 'creationDateTime': creationDateTime, 'lastSavedEditDateTime': lastSavedEditDateTime, 'area': area, 'template': template, 'privacy': privacy, 'content': content})
             users.update_one({'_id': creatorID}, {'$push': {'createdNotes': noteID}})
-            return redirect(url_for('viewNote', noteID=noteID))
+            return redirect(url_for('editNote', noteID=noteID))
         else:
             errorMessage = "Name field cannot be empty.  Please enter a valid name."
     return render_template("createNote.html", errorMessage=errorMessage)
@@ -140,7 +128,7 @@ def editNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
-    elif session['username'] != selectedNote['creatorName']  and  session.get('admin', None) != True:
+    elif session.get('username', None) != selectedNote['creatorName']  and  session.get('admin', None) != True:
         return redirect(url_for('viewNote', noteID=noteID))
 
     if request.method == 'POST':
@@ -155,7 +143,7 @@ def editNote(noteID):
 @app.route("/delete/<noteID>", methods=['GET', 'POST'])
 def deleteNote(noteID):
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    if selectedNote == None  or  ( session['username'] != selectedNote['creatorName']  and  session.get('admin', None) != True ):
+    if selectedNote == None  or  ( session.get('username', None) != selectedNote['creatorName']  and  session.get('admin', None) != True ):
         return redirect(url_for('home'))
     
     if request.method == 'POST':
@@ -175,7 +163,7 @@ def deleteNote(noteID):
 def shareNote(noteID):
     errorMessage = None
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
-    hasPermissionToShare = ( session['username'] == selectedNote['creatorName']  or  selectedNote['privacy'] == 'Public' )
+    hasPermissionToShare = ( session.get('username', None) == selectedNote['creatorName']  or  selectedNote['privacy'] == 'Public' )
     
     if request.method == 'POST':
         shareWith = request.form['shareWith']
@@ -198,9 +186,9 @@ def noteList(filterBy):
         filteredNotes = notes.find({'privacy': 'Public'})
     elif filterBy == "yourNotes":
         displayMessage = "Currently displaying your notes and notes that have been shared with you."
-        currentUserID = users.find_one({'username': session['username']}, {'_id': 1})['_id']
+        currentUserID = users.find_one({'username': session.get('username', None)}, {'_id': 1})['_id']
         filteredNotes = notes.find({'creatorID': currentUserID})
-        receivedNotesID = users.find_one({'username': session['username']}, {'_id': 0, 'receivedNotes': 1})['receivedNotes']
+        receivedNotesID = users.find_one({'username': session.get('username', None)}, {'_id': 0, 'receivedNotes': 1})['receivedNotes']
         receivedNotes = notes.find({'_id': {'$in': receivedNotesID}})
     elif filterBy.startswith("search"):
         search = filterBy[7:]
@@ -271,7 +259,7 @@ def logout():
     session.pop('username')
     if session.get('admin', None) != None:
         session.pop('admin')
-    return redirect("/")
+    return redirect((url_for('home'))
 
 
 @app.route("/accountDetails", methods=['GET', 'POST'])
@@ -295,9 +283,9 @@ def accountDetails():
                 errorMessage = "Username already in use.  Please choose a different one."
             else:
                 #update all notes created by user with the user's new username
-                notes.update_many({'creatorName': session['username']}, {'$set': {'creatorName': newUsername}})
+                notes.update_many({'creatorName': session.get('username', None)}, {'$set': {'creatorName': newUsername}})
                 #update the user object with new username
-                users.update_one({'username': session['username']}, {'$set': {'username': newUsername}})
+                users.update_one({'username': session.get('username', None)}, {'$set': {'username': newUsername}})
                 #update session username variable 
                 session['username'] = newUsername
                 errorMessage = "Username successfuly updated"
@@ -308,10 +296,10 @@ def accountDetails():
                 errorMessage = "Password not secure enough.  Please choose a longer password."
             else:
                 hashedPassword = bcrypt.hashpw(newPassword.encode('utf-8'), bcrypt.gensalt())
-                users.update_one({'username': session['username']}, {'$set': {'password': hashedPassword}})
+                users.update_one({'username': session.get('username', None)}, {'$set': {'password': hashedPassword}})
                 errorMessage = "Password successfuly updated."
 
-    return render_template("updateAccountDetails.html", errorMessage=errorMessage, username=session['username'])
+    return render_template("updateAccountDetails.html", errorMessage=errorMessage, username=session.get('username', None))
 
 
 @app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
@@ -406,9 +394,7 @@ def downloadNote(noteID):
         "encoding": "UTF-8",
     }
 
-    config = pdfkit.configuration(wkhtmltopdf = 'static/wkhtmltopdf.exe')
-    #config = pdfkit.configuration(wkhtmltopdf = url_for('static', filename='wkhtmltopdf.exe'))
-    #config = pdfkit.configuration(wkhtmltopdf = open(join('static', 'wkhtmltopdf.exe'), 'r'))
+    config = pdfkit.configuration(wkhtmltopdf = '/usr/bin/wkhtmltopdf')         #for hosting on pythonanywhere, but will not work locally
     pdf = pdfkit.from_string(content, options=options, configuration=config)
     response = make_response(pdf)
     response.headers["Content-Type"] = "application/pdf"
@@ -433,8 +419,7 @@ def summarizeNote(noteID):
     content = re.sub(re.compile('<.*?>'), '', note['content'])      #removes all html tags from note content so that plaintext parser can understand
 
     parser = PlaintextParser.from_string(content, Tokenizer("english"))
-    stemmer = Stemmer("english")
-    summarizer = LsaSummarizer()
+    summarizer = LsaSummarizer(Stemmer("english"))
     summarizer.stop_words = get_stop_words("english")
     summary = summarizer(parser.document, sentences_count=4)  # You can adjust the number of sentences in the summary
 
@@ -453,15 +438,18 @@ def ttsNote(noteID):
         if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
+    noteURL = 'static/audio/'+noteID+'.mp3'
+    name = note['name']
+
     audio = elclient.text_to_speech.convert(
         text=note['content'],
         voice_id="JBFqnCBsd6RMkjVDRZzb",
-        model_id="eleven_multilingual_v2",
+        model_id="eleven_turbo_v2",
         output_format="mp3_44100_128",
     )
-    play(audio, use_ffmpeg=False)
+    save(audio, noteURL)
 
-    return redirect(url_for('viewNote', noteID=noteID))
+    return render_template("playtts.html", noteURL='/'+noteURL, name=name)
 
 
 

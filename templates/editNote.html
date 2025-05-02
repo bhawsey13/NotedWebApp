@@ -33,17 +33,7 @@
     </ul>
 
     <div class="noteBody">
-        {% if selectedNote['template'] == "Cornell" %}
-            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
-        {% elif selectedNote['template'] == "Mapping" %}
-            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
-        {% elif selectedNote['template'] == "Outlining" %}
-            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
-        {% elif selectedNote['template'] == "Charting" %}
-            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
-        {% elif selectedNote['template'] == "Sentence" %}
-            <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
-        {% endif %}
+        <textarea id="text-editor-edit" name="tinymce"> {{ selectedNote['content'] }} </textarea>
     </div>
 </form>
 

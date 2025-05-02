@@ -414,3 +414,19 @@ h4 {
     margin-right: auto;
     margin-top: 30px;
 }
+
+
+
+
+
+/* play tts page styling */
+
+.audioDiv {
+    width: 100%;
+    padding-top: 25px;
+}
+
+.audioDiv audio {
+    margin: 0 auto;
+    display: table;
+}
