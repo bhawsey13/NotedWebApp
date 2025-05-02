@@ -259,7 +259,7 @@ def logout():
     session.pop('username')
     if session.get('admin', None) != None:
         session.pop('admin')
-    return redirect((url_for('home'))
+    return redirect((url_for('home')))
 
 
 @app.route("/accountDetails", methods=['GET', 'POST'])
