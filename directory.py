@@ -65,7 +65,13 @@ def createNote():
 
     errorMessage = None
     if request.method == 'POST':
-        if request.form['name'] != "" :
+        if request.form['name'] == "" :
+            errorMessage = "Name field cannot be empty.  Please enter a valid name."
+        elif request.form['name'][0] == " ":
+            errorMessage = "Name field cannot start with a space.  Please enter a valid name."
+        elif len(request.form['name'])  > 60:
+            errorMessage = "Name field too long.  Please enter a name less than 60 characters."
+        else:
             noteID = ObjectId()
             creatorID = users.find_one({'username': session.get('username', None)}, {'_id': 1})['_id']
             creatorName = session.get('username', None)
@@ -100,13 +106,15 @@ def createNote():
             notes.insert_one({'_id':  noteID, 'name': name, 'creatorName': creatorName, 'creatorID': creatorID, 'creationDateTime': creationDateTime, 'lastSavedEditDateTime': lastSavedEditDateTime, 'area': area, 'template': template, 'privacy': privacy, 'content': content})
             users.update_one({'_id': creatorID}, {'$push': {'createdNotes': noteID}})
             return redirect(url_for('editNote', noteID=noteID))
-        else:
-            errorMessage = "Name field cannot be empty.  Please enter a valid name."
+    
     return render_template("createNote.html", errorMessage=errorMessage)
 
 
 @app.route("/view/<noteID>")
 def viewNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
 
@@ -125,6 +133,9 @@ def viewNote(noteID):
 
 @app.route("/edit/<noteID>", methods=['GET', 'POST'])
 def editNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None:
         return redirect(url_for('home'))
@@ -142,6 +153,9 @@ def editNote(noteID):
 
 @app.route("/delete/<noteID>", methods=['GET', 'POST'])
 def deleteNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     if selectedNote == None  or  ( session.get('username', None) != selectedNote['creatorName']  and  session.get('admin', None) != True ):
         return redirect(url_for('home'))
@@ -161,6 +175,9 @@ def deleteNote(noteID):
 
 @app.route("/share/<noteID>", methods=['GET', 'POST'])
 def shareNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     errorMessage = None
     selectedNote = notes.find_one({'_id': ObjectId(noteID)})
     hasPermissionToShare = ( session.get('username', None) == selectedNote['creatorName']  or  selectedNote['privacy'] == 'Public' )
@@ -372,6 +389,9 @@ def accountDetailsAdminControl(username):
 
 @app.route("/downloadNote/<noteID>", methods=['GET', 'POST'])
 def downloadNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
     if note == None:
@@ -405,6 +425,9 @@ def downloadNote(noteID):
 
 @app.route("/summarizeNote/<noteID>", methods=['GET', 'POST'])
 def summarizeNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
     if note == None:
@@ -428,6 +451,9 @@ def summarizeNote(noteID):
 
 @app.route("/ttsNote/<noteID>", methods=['GET', 'POST'])
 def ttsNote(noteID):
+    if ObjectId.is_valid(noteID) == False:
+        return redirect(url_for('home'))
+
     note = notes.find_one({'_id': ObjectId(noteID)})
     user = users.find_one({'username': session.get('username', None)})
     if note == None:
