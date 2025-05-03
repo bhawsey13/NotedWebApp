@@ -65,11 +65,14 @@ def createNote():
 
     errorMessage = None
     if request.method == 'POST':
-        if request.form['name'] == "" :
+        noteName = request.form['name']
+        if noteName == "" :
             errorMessage = "Name field cannot be empty.  Please enter a valid name."
-        elif request.form['name'][0] == " ":
+        elif noteName[0] == " ":
             errorMessage = "Name field cannot start with a space.  Please enter a valid name."
-        elif len(request.form['name'])  > 60:
+        elif "%" in noteName or "=" in noteName or "?" in noteName or "#" in noteName or "(" in noteName or ")" in noteName or "<" in noteName or ">" in noteName or "{" in noteName or "}" in noteName:
+            errorMessage = "Name field cannot contain special characters.  Please enter a valid name."
+        elif len(noteName)  > 60:
             errorMessage = "Name field too long.  Please enter a name less than 60 characters."
         else:
             noteID = ObjectId()
@@ -77,7 +80,7 @@ def createNote():
             creatorName = session.get('username', None)
             creationDateTime = str(datetime.utcnow())
             lastSavedEditDateTime = str(datetime.utcnow())
-            name = request.form['name']
+            name = noteName
             area = request.form['area']
             template = request.form['template']
             privacy = request.form['privacy']
@@ -184,7 +187,13 @@ def shareNote(noteID):
     
     if request.method == 'POST':
         shareWith = request.form['shareWith']
-        if users.find_one({'username': shareWith}) == None:
+        if shareWith == "":
+            errorMessage = "Username field cannot be empty.  Please enter a valid username."
+        elif "%" in shareWith or "=" in shareWith or "?" in shareWith or "#" in shareWith or "(" in shareWith or ")" in shareWith or "<" in shareWith or ">" in shareWith or "{" in shareWith or "}" in shareWith:
+            errorMessage = "Username field cannot contain special characters.  Please enter a valid username."
+        elif " " in shareWith:
+            errorMessage = "Username field cannot contain spaces.  Please enter a valid username."
+        elif users.find_one({'username': shareWith}) == None:
             errorMessage = "Invalid username.  Please try again."
         else:
             users.update_one({'username': shareWith}, {'$push': {'receivedNotes': ObjectId(noteID)}})
@@ -219,10 +228,18 @@ def noteList(filterBy):
 
 @app.route("/search", methods=['GET', 'POST'])
 def search():
+    errorMessage = None
     if request.method == 'POST':
         search = request.form['search']
-        return redirect(url_for('noteList', filterBy="search="+search))
-    return render_template("search.html")
+        if search == "":
+            errorMessage = "Search field cannot be empty.  Please enter a valid search."
+        elif "%" in search or "=" in search or "?" in search or "#" in search or "(" in search or ")" in search or "<" in search or ">" in search or "{" in search or "}" in search:
+            errorMessage = "Search field cannot contain special characters.  Please enter a valid search."
+        elif search[0] == " ":
+            errorMessage = "Search field cannot start with a space.  Please enter a valid search."
+        else: 
+            return redirect(url_for('noteList', filterBy="search="+search))
+    return render_template("search.html", errorMessage=errorMessage)
 
 
 @app.route("/about")
@@ -237,7 +254,13 @@ def login():
         username = request.form['username']
         password = request.form['password']
         user = users.find_one({'username': username})
-        if user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
+        if username == "" or password == "":
+            errorMessage = "Input fields cannot be empty.  Please enter valid account details."
+        elif " " in username or "%" in username or "=" in username or "?" in username or "#" in username or "(" in username or ")" in username or "<" in username or ">" in username or "{" in username or "}" in username:
+            errorMessage = "Input fields cannot contain spaces or special characters.  Please enter valid account details."
+        elif " " in password or "%" in password or "=" in password or "?" in password or "#" in password or "(" in password or ")" in password or "<" in password or ">" in password or "{" in password or "}" in password:
+            errorMessage = "Input fields cannot contain spaces or special characters.  Please enter valid account details."
+        elif user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             session['username'] = username
             if user['admin']:
                 session['admin'] = True
@@ -258,15 +281,17 @@ def register():
             errorMessage = "Username already in use.  Please choose a different one or navigate to log in page if you already have an account."
         elif len(password) < 10 :
             errorMessage = "Password not secure enough.  Please choose a longer password."
-        elif " " in username or " " in password:
-            errorMessage = "Username and password cannot contain spaces.  Please enter account details without spaces."
+        elif " " in username or "%" in username or "=" in username or "?" in username or "#" in username or "(" in username or ")" in username or "<" in username or ">" in username or "{" in username or "}" in username:
+            errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
+        elif " " in password or "%" in password or "=" in password or "?" in password or "#" in password or "(" in password or ")" in password or "<" in password or ">" in password or "{" in password or "}" in password:
+            errorMessage = "Password cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
         else:   
             userID = ObjectId()
             session['username'] = username
             hashedPassword = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
             users.insert_one({'_id': userID, 'username': username, 'password': hashedPassword, 'admin': False, 'createdNotes': [], 'receivedNotes': []})
             return redirect(url_for('home'))   
-                 
+
     return render_template("register.html", errorMessage=errorMessage)
 
 
@@ -282,7 +307,7 @@ def logout():
 @app.route("/accountDetails", methods=['GET', 'POST'])
 def accountDetails():
     if session.get('username', None) == None:
-        return redirect(url_for('home'))
+        return redirect(url_for('login'))
 
     errorMessage = None
     if request.method == 'POST':
@@ -294,8 +319,8 @@ def accountDetails():
             errorMessage = "Please only fill in one field at a time."
         elif newUsername != "":
             checkUsernameAvailabilty = users.find_one({'username': newUsername})
-            if " " in newUsername:
-                errorMessage = "Invalid username.  Please try again."
+            if " " in newUsername or "%" in newUsername or "=" in newUsername or "?" in newUsername or "#" in newUsername or "(" in newUsername or ")" in newUsername or "<" in newUsername or ">" in newUsername or "{" in newUsername or "}" in newUsername:
+                errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
             elif checkUsernameAvailabilty != None:
                 errorMessage = "Username already in use.  Please choose a different one."
             else:
@@ -307,8 +332,8 @@ def accountDetails():
                 session['username'] = newUsername
                 errorMessage = "Username successfuly updated"
         elif newPassword != "":
-            if " " in newPassword:
-                errorMessage = "Invalid password.  Please try again."
+            if " " in newPassword or "%" in newPassword or "=" in newPassword or "?" in newPassword or "#" in newPassword or "(" in newPassword or ")" in newPassword or "<" in newPassword or ">" in newPassword or "{" in newPassword or "}" in newPassword:
+                errorMessage = "Password cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
             elif len(newPassword) < 10:
                 errorMessage = "Password not secure enough.  Please choose a longer password."
             else:
@@ -321,7 +346,9 @@ def accountDetails():
 
 @app.route("/deleteAccount/<username>", methods=['GET', 'POST'])
 def deleteAccount(username):
-    if session.get('username', None) != username  and  session.get('admin', None) == False:
+    if session.get('username', None) != username  and  session.get('admin', None) != True:
+        return redirect(url_for('home'))
+    elif users.find_one({'username': username}) == None:
         return redirect(url_for('home'))
 
     filteredNotes = None
@@ -351,7 +378,7 @@ def deleteAccount(username):
 
 @app.route("/adminControls", methods=['GET', 'POST'])
 def adminControls():
-    if session.get('username', None) == None  or  session.get('admin', False) != True:
+    if session.get('username', None) == None  or  session.get('admin', None) != True:
         return redirect(url_for('home'))
 
     allNotes = notes.find()
@@ -373,8 +400,8 @@ def accountDetailsAdminControl(username):
             errorMessage = "Username field cannot be empty."
         else:
             checkUsernameAvailabilty = users.find_one({'username': newUsername})
-            if " " in newUsername:
-                errorMessage = "Invalid username.  Please try again."
+            if " " in newUsername or "%" in newUsername or "=" in newUsername or "?" in newUsername or "#" in newUsername or "(" in newUsername or ")" in newUsername or "<" in newUsername or ">" in newUsername or "{" in newUsername or "}" in newUsername:
+                errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
             elif checkUsernameAvailabilty != None:
                 errorMessage = "Username already in use.  Please choose a different one."
             else:

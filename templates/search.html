@@ -4,6 +4,12 @@
 
 <h1> Search Page </h1>
 
+{% if errorMessage %}
+    <div class="errorMessage">
+        {{ errorMessage }}
+    </div>
+{% endif %}
+
 <form method="POST">
     <div class="searchRow">
         <button type="submit"> Search </button>
