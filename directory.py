@@ -49,6 +49,11 @@ moment = Moment(app)
 elclient = ElevenLabs(api_key=os.getenv('ELEVENLABS_API_KEY'))
 
 
+#function for detecting special characters
+def containsSpecialChars(text):
+    return "$" in text or "@" in text or ";" in text or "%" in text or "=" in text or "?" in text or "#" in text or "(" in text or ")" in text or "<" in text or ">" in text or "{" in text or "}" in text
+
+
 
 
 #Start of directory:
@@ -70,8 +75,8 @@ def createNote():
             errorMessage = "Name field cannot be empty.  Please enter a valid name."
         elif noteName[0] == " ":
             errorMessage = "Name field cannot start with a space.  Please enter a valid name."
-        elif "%" in noteName or "=" in noteName or "?" in noteName or "#" in noteName or "(" in noteName or ")" in noteName or "<" in noteName or ">" in noteName or "{" in noteName or "}" in noteName:
-            errorMessage = "Name field cannot contain special characters.  Please enter a valid name."
+        elif containsSpecialChars(noteName):
+            errorMessage = "Name field cannot contain special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid name."
         elif len(noteName)  > 60:
             errorMessage = "Name field too long.  Please enter a name less than 60 characters."
         else:
@@ -189,8 +194,8 @@ def shareNote(noteID):
         shareWith = request.form['shareWith']
         if shareWith == "":
             errorMessage = "Username field cannot be empty.  Please enter a valid username."
-        elif "%" in shareWith or "=" in shareWith or "?" in shareWith or "#" in shareWith or "(" in shareWith or ")" in shareWith or "<" in shareWith or ">" in shareWith or "{" in shareWith or "}" in shareWith:
-            errorMessage = "Username field cannot contain special characters.  Please enter a valid username."
+        elif containsSpecialChars(shareWith):
+            errorMessage = "Username field cannot contain special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid username."
         elif " " in shareWith:
             errorMessage = "Username field cannot contain spaces.  Please enter a valid username."
         elif users.find_one({'username': shareWith}) == None:
@@ -233,8 +238,8 @@ def search():
         search = request.form['search']
         if search == "":
             errorMessage = "Search field cannot be empty.  Please enter a valid search."
-        elif "%" in search or "=" in search or "?" in search or "#" in search or "(" in search or ")" in search or "<" in search or ">" in search or "{" in search or "}" in search:
-            errorMessage = "Search field cannot contain special characters.  Please enter a valid search."
+        elif containsSpecialChars(search):
+            errorMessage = "Search field cannot contain special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid search."
         elif search[0] == " ":
             errorMessage = "Search field cannot start with a space.  Please enter a valid search."
         else: 
@@ -256,10 +261,10 @@ def login():
         user = users.find_one({'username': username})
         if username == "" or password == "":
             errorMessage = "Input fields cannot be empty.  Please enter valid account details."
-        elif " " in username or "%" in username or "=" in username or "?" in username or "#" in username or "(" in username or ")" in username or "<" in username or ">" in username or "{" in username or "}" in username:
-            errorMessage = "Input fields cannot contain spaces or special characters.  Please enter valid account details."
-        elif " " in password or "%" in password or "=" in password or "?" in password or "#" in password or "(" in password or ")" in password or "<" in password or ">" in password or "{" in password or "}" in password:
-            errorMessage = "Input fields cannot contain spaces or special characters.  Please enter valid account details."
+        elif containsSpecialChars(username):
+            errorMessage = "Username field cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid username."
+        elif containsSpecialChars(password):
+            errorMessage = "Password field cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid password."
         elif user and bcrypt.checkpw(password.encode('utf-8'), user['password']):
             session['username'] = username
             if user['admin']:
@@ -281,10 +286,10 @@ def register():
             errorMessage = "Username already in use.  Please choose a different one or navigate to log in page if you already have an account."
         elif len(password) < 10 :
             errorMessage = "Password not secure enough.  Please choose a longer password."
-        elif " " in username or "%" in username or "=" in username or "?" in username or "#" in username or "(" in username or ")" in username or "<" in username or ">" in username or "{" in username or "}" in username:
-            errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
-        elif " " in password or "%" in password or "=" in password or "?" in password or "#" in password or "(" in password or ")" in password or "<" in password or ">" in password or "{" in password or "}" in password:
-            errorMessage = "Password cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
+        elif containsSpecialChars(username):
+            errorMessage = "Username cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter valid account details."
+        elif containsSpecialChars(password):
+            errorMessage = "Password cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter valid account details."
         else:   
             userID = ObjectId()
             session['username'] = username
@@ -319,8 +324,8 @@ def accountDetails():
             errorMessage = "Please only fill in one field at a time."
         elif newUsername != "":
             checkUsernameAvailabilty = users.find_one({'username': newUsername})
-            if " " in newUsername or "%" in newUsername or "=" in newUsername or "?" in newUsername or "#" in newUsername or "(" in newUsername or ")" in newUsername or "<" in newUsername or ">" in newUsername or "{" in newUsername or "}" in newUsername:
-                errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
+            if containsSpecialChars(newUsername):
+                errorMessage = "Username cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid username."
             elif checkUsernameAvailabilty != None:
                 errorMessage = "Username already in use.  Please choose a different one."
             else:
@@ -332,8 +337,8 @@ def accountDetails():
                 session['username'] = newUsername
                 errorMessage = "Username successfuly updated"
         elif newPassword != "":
-            if " " in newPassword or "%" in newPassword or "=" in newPassword or "?" in newPassword or "#" in newPassword or "(" in newPassword or ")" in newPassword or "<" in newPassword or ">" in newPassword or "{" in newPassword or "}" in newPassword:
-                errorMessage = "Password cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
+            if containsSpecialChars(newPassword):
+                errorMessage = "Password cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid password."
             elif len(newPassword) < 10:
                 errorMessage = "Password not secure enough.  Please choose a longer password."
             else:
@@ -400,8 +405,8 @@ def accountDetailsAdminControl(username):
             errorMessage = "Username field cannot be empty."
         else:
             checkUsernameAvailabilty = users.find_one({'username': newUsername})
-            if " " in newUsername or "%" in newUsername or "=" in newUsername or "?" in newUsername or "#" in newUsername or "(" in newUsername or ")" in newUsername or "<" in newUsername or ">" in newUsername or "{" in newUsername or "}" in newUsername:
-                errorMessage = "Username cannot contain spaces or special characters such as %, =, ?, #, (), <> or {}.  Please enter valid account details."
+            if containsSpecialChars(newUsername):
+                errorMessage = "Username cannot contain spaces or special characters such as $, @, ;, %, =, ?, #, (), <> or {}.  Please enter a valid username."
             elif checkUsernameAvailabilty != None:
                 errorMessage = "Username already in use.  Please choose a different one."
             else:
