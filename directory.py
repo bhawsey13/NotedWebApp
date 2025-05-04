@@ -131,7 +131,7 @@ def viewNote(noteID):
     elif selectedNote['privacy'] == 'Private'  and  user == None:
         return redirect(url_for('home'))
     elif user != None:
-        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  selectedNote['privacy'] != 'Public':         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
     if selectedNote['creatorName'] == session.get('username', None)  or  session.get('admin', None) == True:
         return redirect(url_for('editNote', noteID=noteID))
@@ -435,7 +435,7 @@ def downloadNote(noteID):
     elif note['privacy'] == 'Private'  and  user == None:
         return redirect(url_for('home'))
     elif user != None:
-        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True  and  note['privacy'] != 'Public':         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
     noteName = note['name']
@@ -471,7 +471,7 @@ def summarizeNote(noteID):
     elif note['privacy'] == 'Private'  and  user == None:
         return redirect(url_for('home'))
     elif user != None:
-        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True  and  note['privacy'] != 'Public':         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
     name = note['name']
@@ -497,7 +497,7 @@ def ttsNote(noteID):
     elif note['privacy'] == 'Private'  and  user == None:
         return redirect(url_for('home'))
     elif user != None:
-        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True:         #note id not in users's created or received notes and not admin
+        if ObjectId(noteID) not in user['createdNotes']  and  ObjectId(noteID) not in user['receivedNotes']  and  user['admin'] != True  and  note['privacy'] != 'Public':         #note id not in users's created or received notes and not admin
             return redirect(url_for('home'))
 
     noteURL = 'static/audio/'+noteID+'.mp3'
