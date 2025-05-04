@@ -378,8 +378,8 @@ h4 {
     color: black;
 }
 
-.noteListTable a:hover tr {
-    background-color: cadetblue;
+.noteListTable a:hover {
+    color: rgb(118, 185, 187);
 }
 
 .displayMessage {

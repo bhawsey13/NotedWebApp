@@ -21,7 +21,7 @@
         {% for note in filteredNotes %}
         <tr>
             <td> <a href="{{ url_for('viewNote', noteID=note['_id']) }}"> {{ note['name'] }} </a> </td>
-            <td> {{ note['creatorName'] }} </td>
+            <td> <a href="{{ url_for('noteList', filterBy='creator=' + note['creatorName']) }}"> {{ note['creatorName'] }} </a> </td>
             <td> {{ note['area'] }} </td>
             <td> {{ note['template'] }} </td>
             <td> {{ note['privacy'] }} </td>

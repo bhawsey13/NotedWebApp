@@ -225,6 +225,10 @@ def noteList(filterBy):
         search = filterBy[7:]
         displayMessage = "Currently displaying results of search: " + search
         filteredNotes = notes.find({'name': {'$regex': search, "$options": 'i'}, 'privacy': 'Public'})
+    elif filterBy.startswith("creator"):
+        creator = filterBy[8:]
+        displayMessage = "Currently displaying all public notes for user: " + creator
+        filteredNotes = notes.find({'creatorName': creator, 'privacy': 'Public'})
     else:
         return redirect(url_for('home'))
 
